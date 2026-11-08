@@ -32,8 +32,13 @@ struct GameView: View {
             ZigZagBackground()
             if let vm {
                 screen(vm)
+                if vm.state == .succeeded {
+                    SuccessOverlayView(isLastLevel: vm.isLastLevel, onNext: { vm.next() }, onHome: { dismiss() })
+                        .transition(.opacity)
+                }
             }
         }
+        .animation(.easeIn(duration: 0.25), value: vm?.state == .succeeded)
         .onAppear {
             guard vm == nil, levels.indices.contains(levelIndex) else { return }
             vm = GameViewModel(levels: levels, levelIndex: levelIndex, progress: progress, sound: sound)
