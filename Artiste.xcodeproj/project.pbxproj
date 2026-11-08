@@ -16,8 +16,10 @@
 		3DFA8357C000C013A1A9DAAB /* ZigZagBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84C11BCBFC4E4546F2177F3 /* ZigZagBackground.swift */; };
 		44A299314ED18CDE4DEE2638 /* ActionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8347A2DCD812444A3C5554 /* ActionTests.swift */; };
 		472FA463C68A514DC1384DFF /* GridTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ADE8F1A8466F87E78CC3D8D /* GridTests.swift */; };
+		517334215253078AB6D69A4F /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C5CF969A06050D3312C686E /* RootView.swift */; };
 		5477A412432EF51962CC9F6E /* LevelStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9856D0CEF5B56867A998E22C /* LevelStore.swift */; };
 		63869033AB64619E04187EF0 /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A0B1434B5B9617C1A21295 /* GridView.swift */; };
+		63F9BBA6F2DD48F6A557EC47 /* LevelSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB9D43688293AD3A13B99D8 /* LevelSelectView.swift */; };
 		6D4B747201660AE128F35716 /* Level.swift in Sources */ = {isa = PBXBuildFile; fileRef = 474ADC1C3C9BCCDBF9ECCC46 /* Level.swift */; };
 		6F293AFE60EF4B75E36CA014 /* DragToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE58B52B2F14D84674E3ACA9 /* DragToken.swift */; };
 		7D6DBA7792D2263220649703 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0931528317A716CA3E7DC6D2 /* Grid.swift */; };
@@ -77,6 +79,7 @@
 		92CD5EE166002065BCA90BB5 /* ArtisteTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ArtisteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		93BF102EF3394AA7A81CA480 /* ArtisteApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtisteApp.swift; sourceTree = "<group>"; };
 		9856D0CEF5B56867A998E22C /* LevelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelStore.swift; sourceTree = "<group>"; };
+		9C5CF969A06050D3312C686E /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		A84C11BCBFC4E4546F2177F3 /* ZigZagBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZigZagBackground.swift; sourceTree = "<group>"; };
 		A9577A6451DBA26ED44ABB60 /* LevelDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelDataTests.swift; sourceTree = "<group>"; };
 		AE58B52B2F14D84674E3ACA9 /* DragToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragToken.swift; sourceTree = "<group>"; };
@@ -91,6 +94,7 @@
 		F0C4B4B9E2BD232D2F5B7161 /* SuccessOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessOverlayView.swift; sourceTree = "<group>"; };
 		F21A992946CFA3FAB784D264 /* PaintColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaintColor.swift; sourceTree = "<group>"; };
 		F32BF423F87AA3EC79031D27 /* ControlButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlButtonsView.swift; sourceTree = "<group>"; };
+		FAB9D43688293AD3A13B99D8 /* LevelSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelSelectView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -113,6 +117,8 @@
 				BEC9A8B47550B5A4562F6D41 /* FireworksView.swift */,
 				C8199D950942560033476BF4 /* GameView.swift */,
 				17A0B1434B5B9617C1A21295 /* GridView.swift */,
+				FAB9D43688293AD3A13B99D8 /* LevelSelectView.swift */,
+				9C5CF969A06050D3312C686E /* RootView.swift */,
 				19BAF40E507890CAEF1559AC /* SlotRowView.swift */,
 				F0C4B4B9E2BD232D2F5B7161 /* SuccessOverlayView.swift */,
 				7E3F60EA7F80F62A70AFCD9E /* Theme.swift */,
@@ -309,9 +315,11 @@
 				63869033AB64619E04187EF0 /* GridView.swift in Sources */,
 				C80040003C9A3B1A6AFD01DF /* Interpreter.swift in Sources */,
 				6D4B747201660AE128F35716 /* Level.swift in Sources */,
+				63F9BBA6F2DD48F6A557EC47 /* LevelSelectView.swift in Sources */,
 				5477A412432EF51962CC9F6E /* LevelStore.swift in Sources */,
 				B47FEF6B12A0D0A9237CC824 /* PaintColor.swift in Sources */,
 				DD8AAD0349124B3D7C3C4824 /* ProgressStore.swift in Sources */,
+				517334215253078AB6D69A4F /* RootView.swift in Sources */,
 				9C31C1D522A965C9340F253E /* SlotRowView.swift in Sources */,
 				C099038BBE44D2F46B9F19BC /* SoundPlayer.swift in Sources */,
 				8F9EA88ED3205FBABADDC434 /* SuccessOverlayView.swift in Sources */,

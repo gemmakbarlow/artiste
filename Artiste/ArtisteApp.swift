@@ -15,10 +15,7 @@ struct ArtisteApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack {
-                GameView(levelIndex: 0)
-                    .toolbar(.hidden, for: .navigationBar)
-            }
+            RootView()
             .environment(progress)
             .environment(\.levels, levels)
             .environment(\.sound, sound)
