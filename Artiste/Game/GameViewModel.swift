@@ -102,6 +102,12 @@ enum BoardState: Sendable {
                 sound.play(.bump)
             }
         }
+        // Hold so the last slot's highlight and paint are seen before the result.
+        do {
+            try await Task.sleep(for: stepDelay)
+        } catch {
+            return  // Cancelled: `cancelRun` owns the cleanup.
+        }
         guard runID == id else { return }
 
         activeSlot = nil

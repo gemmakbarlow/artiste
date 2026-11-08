@@ -37,7 +37,7 @@ struct FireworksView: View {
     }
 
     private static let palette: [Color] = [
-        Theme.red, Theme.blue, Theme.green, Theme.yellow, Theme.orange, Theme.playBlue,
+        Theme.red, Theme.blue, Theme.green, Theme.yellow,
     ]
     private static let burstSize = 40
     private static let lifetime = 1.4

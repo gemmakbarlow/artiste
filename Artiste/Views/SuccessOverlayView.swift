@@ -46,6 +46,7 @@ struct SuccessOverlayView: View {
             }
             .padding(.horizontal, 24)
         }
+        .accessibilityAddTraits(.isModal)
     }
 }
 

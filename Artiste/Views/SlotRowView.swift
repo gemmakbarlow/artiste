@@ -59,13 +59,17 @@ private struct SlotView: View {
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("Slot \(index + 1), \(action.map { ActionTokenView.label($0).lowercased() } ?? "empty")")
             .accessibilityActions {
-                ForEach(vm.trayActions, id: \.self) { trayAction in
-                    Button("Set to \(ActionTokenView.label(trayAction))") {
-                        vm.place(trayAction, at: index)
+                if vm.canEdit {
+                    ForEach(vm.trayActions, id: \.self) { trayAction in
+                        Button("Set to \(ActionTokenView.label(trayAction))") {
+                            vm.place(trayAction, at: index)
+                        }
                     }
-                }
-                Button("Clear") {
-                    vm.clear(slot: index)
+                    if action != nil {
+                        Button("Clear") {
+                            vm.clear(slot: index)
+                        }
+                    }
                 }
             }
     }

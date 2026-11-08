@@ -47,7 +47,7 @@ struct GridView: View {
         .clipped()
         .overlay(Rectangle().strokeBorder(Theme.gridLine, lineWidth: 0.5))
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Row \(p.row + 1), column \(p.col + 1), \(color?.rawValue ?? "empty")")
+        .accessibilityLabel("Row \(p.row + 1), column \(p.col + 1), \(color?.rawValue ?? "empty")\(marker == p ? ", marker" : "")")
     }
 
     private func markerView(cell: CGFloat) -> some View {

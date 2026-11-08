@@ -43,6 +43,13 @@ struct GameView: View {
             guard vm == nil, levels.indices.contains(levelIndex) else { return }
             vm = GameViewModel(levels: levels, levelIndex: levelIndex, progress: progress, sound: sound)
         }
+        .onChange(of: vm?.state) { _, state in
+            switch state {
+            case .succeeded: AccessibilityNotification.Announcement("Good job!").post()
+            case .failed: AccessibilityNotification.Announcement("Not quite. Tap Reset to try again.").post()
+            default: break
+            }
+        }
         .onDisappear {
             vm?.cancelRun()
         }
@@ -119,7 +126,7 @@ struct GameView: View {
     }
 
     private func circleButton(_ symbol: String, label: String, action: @escaping () -> Void) -> some View {
-        let size = metrics.button * 0.8
+        let size = max(44, metrics.button * 0.8)
         return Button(action: action) {
             Image(systemName: symbol)
                 .font(.system(size: size * 0.42, weight: .bold))

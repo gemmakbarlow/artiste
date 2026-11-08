@@ -5,6 +5,8 @@ struct ControlButtonsView: View {
     let vm: GameViewModel
     let metrics: Theme.Metrics
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     private let tab = UnevenRoundedRectangle(topLeadingRadius: 14, topTrailingRadius: 14)
 
     var body: some View {
@@ -36,7 +38,7 @@ struct ControlButtonsView: View {
                     .overlay(tab.strokeBorder(vm.canReset ? Theme.emptySlot : Color(white: 0.45), lineWidth: 4))
             }
             .buttonStyle(.plain)
-            .keyframeAnimator(initialValue: CGFloat(1), repeating: vm.canReset) { content, scale in
+            .keyframeAnimator(initialValue: CGFloat(1), repeating: vm.canReset && !reduceMotion) { content, scale in
                 content.scaleEffect(scale, anchor: .bottom)
             } keyframes: { _ in
                 KeyframeTrack {

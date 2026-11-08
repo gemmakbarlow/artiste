@@ -62,6 +62,22 @@ import Testing
         #expect(sound.played.last == .success)
     }
 
+    @Test func lastSlotStaysHighlightedBeforeResult() async {
+        let vm = makeVM(stepDelay: .milliseconds(100))
+        fill(vm, vm.level.solution)
+        let lastIndex = vm.level.solution.count - 1
+        let task = Task { await vm.play() }
+        for _ in 0..<200 where vm.canvas != vm.level.target {
+            try? await Task.sleep(for: .milliseconds(5))
+        }
+        #expect(vm.canvas == vm.level.target)
+        #expect(vm.activeSlot == lastIndex)
+        #expect(vm.state == .running)
+        await task.value
+        #expect(vm.state == .succeeded)
+        #expect(vm.activeSlot == nil)
+    }
+
     @Test func gappedProgramSucceeds() async {
         let vm = makeVM()
         fill(vm, vm.level.solution, at: [0, 2, 4])
