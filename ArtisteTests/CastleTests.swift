@@ -47,6 +47,20 @@ import Testing
         }
     }
 
+    @Test(arguments: CastleKind.allCases)
+    func battlementsAndRoofsSitOnTopEdge(kind: CastleKind) {
+        let c = Castle.castle(kind)
+        for col in c.battlementColumns {
+            #expect(c.shape.contains(Position(row: c.battlementRow, col: col)))
+            #expect(!c.shape.contains(Position(row: c.battlementRow - 1, col: col)))
+        }
+        for roof in c.roofs {
+            for col in roof.columns {
+                #expect(!c.shape.contains(Position(row: roof.row - 1, col: col)))
+            }
+        }
+    }
+
     /// Early levels only offer red and blue, so the first three squares right or up
     /// from the start must include both.
     @Test(arguments: CastleKind.allCases)

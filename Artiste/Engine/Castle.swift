@@ -129,5 +129,5 @@ struct Castle: Sendable, Hashable, Identifiable {
         picture: ["...GY...", "...YG...", "..BRBR..", ".GYGYGY.",
                   ".BRBRBR.", "BGYGYGYB", "RBRBRBRB", "BRBRBRBR"],
         roofs: [Roof(columns: 3...4, row: 0, height: 1.8, style: .thatch, flag: true)],
-        battlementColumns: [0, 1, 6, 7], battlementRow: 5)
+        battlementColumns: [0, 7], battlementRow: 5)
 }
