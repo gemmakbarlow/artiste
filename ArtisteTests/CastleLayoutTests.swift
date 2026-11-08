@@ -35,6 +35,46 @@ import Testing
         #expect(sizes.canvas * rows <= area.height + 0.001)
     }
 
+    // MARK: The game screen's board area
+
+    /// The board areas `GameView` gives the castles in Castle Mode, measured in the simulator by logging the
+    /// size `castleBoards` passes to `CastleLayout.gameBoards`.
+    /// iPhone SE (3rd generation), 667 × 375 pt: the smallest supported phone.
+    static let seGameArea = CGSize(width: 359.9, height: 248.4)
+    /// iPhone 17e, 844 × 390 pt with landscape safe-area insets.
+    static let iPhone17eGameArea = CGSize(width: 442.733, height: 243.4)
+    /// iPad mini (A17 Pro), 1133 × 744 pt: the smallest supported iPad.
+    static let iPadMiniGameArea = CGSize(width: 1101, height: 356.2)
+    static let gameAreas = [seGameArea, iPhone17eGameArea, iPadMiniGameArea]
+
+    @Test func gameBoardsUseTheGameViewGap() {
+        let boards = CastleLayout.gameBoards(in: CGSize(width: 600, height: 250), castle: .castle(.rose))
+        #expect(boards.gap == 36)
+        let narrow = CastleLayout.gameBoards(in: CGSize(width: 300, height: 250), castle: .castle(.rose))
+        #expect(narrow.gap == 24)
+    }
+
+    @Test(arguments: Castle.all, [seGameArea, iPhone17eGameArea])
+    func phoneGameCanvasCellIsAtLeast20(castle: Castle, area: CGSize) {
+        #expect(CastleLayout.gameBoards(in: area, castle: castle).canvas >= 20)
+    }
+
+    @Test(arguments: Castle.all)
+    func iPadMiniGameCanvasCellIsAtLeast26(castle: Castle) {
+        #expect(CastleLayout.gameBoards(in: Self.iPadMiniGameArea, castle: castle).canvas >= 26)
+    }
+
+    @Test(arguments: Castle.all, gameAreas)
+    func gameBoardsLeaveRoomForTheArtOverhang(castle: Castle, area: CGSize) {
+        let boards = CastleLayout.gameBoards(in: area, castle: castle)
+        let columns = CGFloat(castle.shape.width)
+        #expect(boards.margin >= CastleLayout.artOverhang * boards.canvas)
+        #expect(boards.gap >= CastleLayout.artOverhang * (boards.canvas + boards.target))
+        #expect((boards.canvas + boards.target) * columns + boards.gap + 2 * boards.margin <= area.width + 0.001)
+        #expect(boards.canvas * CGFloat(CastleLayout.rows(castle)) + boards.margin <= area.height + 0.001)
+        #expect(boards.canvas / 2 <= boards.target && boards.target <= boards.canvas)
+    }
+
     @Test(arguments: Castle.all)
     func headroomCoversTallestRoof(castle: Castle) {
         let tallest = castle.roofs.map(\.height).max() ?? 0

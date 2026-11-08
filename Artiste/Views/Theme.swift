@@ -16,6 +16,8 @@ enum Theme {
     static let marker = Color(hex: 0x8E44EC)
     static let playBlue = Color(hex: 0x29B6F6)
     static let arrowRed = Color(hex: 0xE53935)
+    /// The crown on levels finished in Castle Mode.
+    static let crownGold = Color(hex: 0xE8B23A)
 
     static func color(_ c: PaintColor) -> Color {
         switch c {

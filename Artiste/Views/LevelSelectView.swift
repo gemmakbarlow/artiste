@@ -1,9 +1,10 @@
 import SwiftUI
 
-/// The launch screen: title, a grid of level tiles and the mute toggle.
+/// The launch screen: title, a grid of level tiles, the Castle Mode switch and the mute toggle.
 struct LevelSelectView: View {
     @Environment(\.levels) private var levels
     @Environment(ProgressStore.self) private var progress
+    @Environment(AppRouter.self) private var router
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
@@ -25,6 +26,10 @@ struct LevelSelectView: View {
             .padding(.horizontal, 24)
             .padding(.vertical, 12)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            castleModeSwitch
+                .padding(.top, 12)
+                .padding(.leading, 20)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             muteButton
                 .padding(.top, 12)
                 .padding(.trailing, 20)
@@ -61,12 +66,14 @@ struct LevelSelectView: View {
                 spacing: spacing
             ) {
                 ForEach(levels.indices, id: \.self) { index in
-                    NavigationLink(value: index) {
+                    Button {
+                        router.openLevel(index, castleModeOn: progress.isCastleModeOn)
+                    } label: {
                         tile(index: index, side: side)
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("Level \(levels[index].id)")
-                    .accessibilityValue(progress.completedLevelIDs.contains(levels[index].id) ? "Finished" : "")
+                    .accessibilityValue(accessibilityValue(levels[index].id))
                 }
             }
             .frame(width: proxy.size.width, height: proxy.size.height, alignment: .top)
@@ -76,6 +83,8 @@ struct LevelSelectView: View {
     private func tile(index: Int, side: CGFloat) -> some View {
         let color = PaintColor.allCases[index % PaintColor.allCases.count]
         let done = progress.completedLevelIDs.contains(levels[index].id)
+        let crowned = progress.crownedLevelIDs.contains(levels[index].id)
+        let badge = max(20, side * 0.3)
         return RoundedRectangle(cornerRadius: side * 0.2, style: .continuous)
             .fill(Theme.color(color))
             .frame(width: side, height: side)
@@ -87,13 +96,55 @@ struct LevelSelectView: View {
             .overlay(alignment: .topTrailing) {
                 if done {
                     Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: max(20, side * 0.3)))
+                        .font(.system(size: badge))
                         .foregroundStyle(.white, Theme.green)
                         .background(Circle().fill(.white).padding(1))
                         .padding(6)
                 }
             }
+            .overlay(alignment: .topLeading) {
+                if crowned {
+                    Image(systemName: "crown.fill")
+                        .font(.system(size: badge * 0.55, weight: .bold))
+                        .foregroundStyle(Theme.crownGold)
+                        .frame(width: badge, height: badge)
+                        .background(Circle().fill(.white))
+                        .padding(6)
+                }
+            }
             .shadow(color: .black.opacity(0.2), radius: 3, y: 2)
+    }
+
+    private func accessibilityValue(_ id: Int) -> String {
+        let done = progress.completedLevelIDs.contains(id)
+        let crowned = progress.crownedLevelIDs.contains(id)
+        return switch (done, crowned) {
+        case (true, true): "Finished, with a crown"
+        case (true, false): "Finished"
+        case (false, true): "With a crown"
+        case (false, false): ""
+        }
+    }
+
+    /// Castle Mode on: tapping a level asks for a castle first. Saved like the mute setting.
+    private var castleModeSwitch: some View {
+        @Bindable var progress = progress
+        return Toggle(isOn: $progress.isCastleModeOn) {
+            Label {
+                Text("Castle Mode")
+            } icon: {
+                Image(systemName: "crown.fill")
+                    .foregroundStyle(Theme.crownGold)
+            }
+        }
+        .tint(Theme.green)
+        .fixedSize()
+        .font(.system(isPad ? .title3 : .headline, design: .rounded, weight: .bold))
+        .foregroundStyle(.white)
+        .padding(.leading, 14)
+        .padding(.trailing, 8)
+        .padding(.vertical, isPad ? 12 : 6)
+        .background(Capsule().fill(Theme.gridLine))
     }
 
     private var muteButton: some View {
@@ -120,5 +171,6 @@ struct LevelSelectView: View {
         LevelSelectView()
     }
     .environment(progress)
+    .environment(AppRouter(levelCount: 15))
     .environment(\.levels, LevelStore.loadBundled())
 }

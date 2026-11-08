@@ -37,4 +37,28 @@ enum CastleLayout {
         let target = min(canvas, max(canvas / 2, leftover))
         return (canvas, target)
     }
+
+    /// How far castle art can reach past the left, right and bottom of its frame (spire bases, flags, strokes), in squares.
+    static let artOverhang: CGFloat = 0.25
+
+    /// The target and canvas castles in the game screen's board area.
+    struct GameBoards: Equatable {
+        let canvas: CGFloat
+        let target: CGFloat
+        /// Space between the two castles: the game screen's usual gap between its boards.
+        let gap: CGFloat
+        /// Room kept clear left of the target, right of the canvas and below both, for the art's overhang.
+        let margin: CGFloat
+    }
+
+    /// Square sizes for both castles in `area`, the space the game screen gives its boards,
+    /// with room for the art that reaches past each castle's frame.
+    static func gameBoards(in area: CGSize, castle: Castle) -> GameBoards {
+        let gap = max(24, area.width * 0.06)
+        // The canvas square can't be bigger than the full height allows, so this margin always covers its overhang.
+        let margin = artOverhang * max(0, area.height) / CGFloat(rows(castle))
+        let inner = CGSize(width: area.width - 2 * margin, height: area.height - margin)
+        let cells = cellSizes(available: inner, castle: castle, gap: gap)
+        return GameBoards(canvas: cells.canvas, target: cells.target, gap: gap, margin: margin)
+    }
 }

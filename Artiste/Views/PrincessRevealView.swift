@@ -146,8 +146,10 @@ struct PrincessRevealScene: View {
             let princessBottom = (size.height + princessHeight) / 2
             let door = CGSize(width: 1.4 * cell, height: 2 * cell)
             ZStack(alignment: .topLeading) {
+                // Exactly this frame: the game screen dims the rest. On small castles the buttons reach
+                // below the frame and make this stack taller, so the dim must not grow with it.
                 Color.black.opacity(stage.dimmed ? 0.25 : 0)
-                    .ignoresSafeArea()
+                    .frame(width: size.width, height: size.height)
                 ArchedDoorView(isOpen: stage.doorOpen, swings: !reduceMotion, lineWidth: max(2, cell * 0.12))
                     .frame(width: door.width, height: door.height)
                     .position(x: size.width / 2, y: size.height - door.height / 2)
@@ -243,7 +245,8 @@ struct PrincessRevealScene: View {
                 .foregroundStyle(.white)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
-                .background(Capsule().fill(.white.opacity(0.25)))
+                // Dark enough for white text over the palest castle tiles.
+                .background(Capsule().fill(.black.opacity(0.5)))
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Levels")
