@@ -7,25 +7,26 @@
 
 Artiste is a SwiftUI game for iPad and iPhone (landscape only) that teaches young children sequencing — the core idea behind programming. Each level shows a **target picture** on a 5×5 grid and a **canvas** grid that is partly painted. The child drags arrow and paint-drop actions into a row of slots, taps **Play**, and watches a marker walk the grid running each action in turn. If the canvas matches the target, fireworks and a **Next** button appear. If not, the marker stays where it stopped, and the child must tap **Reset** before trying again.
 
-Artiste uses the same kind of puzzle as the game seen at the library, but its look, art and levels are its own.
+Artiste should look and feel very similar to the game seen at the library: the same screen layout, color scheme and chunky round controls (see §6). All icons are SF Symbols, and the 15 levels are Artiste's own designs.
 
 ## 2. Goals and non-goals
 
 **Goals**
 - Big, bright, tappable/draggable elements that suit 4–7 year olds.
-- 15 hand-made 5×5 levels, with colours introduced gradually.
+- 15 hand-made 5×5 levels, with colors introduced gradually.
 - A simple loop: build → Play → watch → succeed or Reset.
 - Works fully offline, with no accounts, ads or network calls.
 
 **Non-goals (v1)**
 - Level editor, procedurally generated levels, endless mode.
 - Loops, functions or other advanced programming ideas.
-- Localisation (English only, but the UI should use icons almost everywhere so it reads without text).
+- Localization (English only, but the UI should use icons almost everywhere so it reads without text).
 - Cloud sync, analytics, in-app purchases.
 
 ## 3. Platform and tech
 
-- Swift 6, SwiftUI, iOS 17+ minimum (uses `@Observable`, `Transferable`, `.draggable`/`.dropDestination`).
+- Swift 6, SwiftUI. Deployment target is the **latest iOS/iPadOS** version that the current Xcode supports, with no back-deployment. This means modern APIs (`@Observable`, `Transferable`, `.draggable`/`.dropDestination`, the newest SF Symbols) can be used freely.
+- Icons: **SF Symbols only**, with no custom image assets apart from the app icon.
 - Universal app: iPad and iPhone, **landscape left/right only**.
 - No third-party dependencies.
 - Tests: Swift Testing (`import Testing`) for the game engine and level data.
@@ -35,28 +36,28 @@ Artiste uses the same kind of puzzle as the game seen at the library, but its lo
 
 ### 4.1 Grid
 - Always 5×5. Coordinates are `(row, col)`, with `(0,0)` at the top-left.
-- Each cell is either **empty (white)** or painted one of the colours in `PaintColor`.
+- Each cell is either **empty (white)** or painted one of the colors in `PaintColor`.
 - The marker starts at the level's `start` position (top-left `(0,0)` unless a level says otherwise).
 
-### 4.2 Colours (introduced gradually)
+### 4.2 Colors (introduced gradually)
 `PaintColor` cases: `red`, `blue`, `green`, `yellow`.
 
-| Levels | Colours in the tray |
+| Levels | Colors in the tray |
 |---|---|
 | 1–4 | red, blue |
 | 5–9 | red, blue, green |
 | 10–15 | red, blue, green, yellow |
 
-The tray shows **only** the paint colours available in the current level. All four arrows are always shown.
+The tray shows **only** the paint colors available in the current level. All four arrows are always shown.
 
 ### 4.3 Actions
 | Action | Effect |
 |---|---|
 | `move(.up/.down/.left/.right)` | Marker moves one cell in that direction. |
-| `paint(color)` | The cell under the marker becomes `color` (painting over an existing colour is allowed). |
+| `paint(color)` | The cell under the marker becomes `color` (painting over an existing color is allowed). |
 
 ### 4.4 Program slots
-- The number of slots equals the length of the level's **reference solution**, which is the shortest answer the level designer wrote.
+- The number of slots is the length of the level's **reference solution** (the shortest answer the level designer wrote) **plus 2**. The extra slots give the child some room for detours and mistakes.
 - Any program that produces the target counts as a success. It doesn't have to match the reference solution.
 - Empty slots are skipped. **Play is enabled as long as at least one slot is filled** (and the board is in the Ready state, see 4.6).
 
@@ -75,7 +76,7 @@ Ready ──Play──▶ Running ──(match)──▶ Succeeded ──Next─
 ```
 - **Ready:** editing allowed; Play is enabled when ≥1 slot is filled; Reset does nothing.
 - **Running:** editing, Play and Reset are all disabled.
-- **Failed:** the marker stays where it stopped, and the canvas keeps whatever was painted. **Play is disabled** (greyed out) and **Reset pulses** gently to show it's the next step. Editing slots *is* allowed, so the child can fix the program while waiting to reset.
+- **Failed:** the marker stays where it stopped, and the canvas keeps whatever was painted. **Play is disabled** (grayed out) and **Reset pulses** gently to show it's the next step. Editing slots *is* allowed, so the child can fix the program while waiting to reset.
 - **Reset** (from Failed) puts the marker back at `start` and restores the canvas to the level's starting pattern. **The program in the slots is kept.**
 - **Succeeded:** a full-screen overlay with fireworks, a big "Good job!" message and a **Next** button (plus a small "back to levels" button). On the last level, Next goes back to level select with a bigger celebration.
 
@@ -94,32 +95,48 @@ Implementation note: the drag payload is a small `Transferable` (`Codable`) valu
 
 ## 6. Screens and layout
 
-### 6.1 Level select (launch screen)
-- Title "Artiste" in a big, friendly rounded font.
-- 15 large numbered tiles (3 rows × 5). Finished levels show a star or tick. All levels are unlocked.
+### 6.0 Launch screen and app icon (green — Nina's favorite)
+- **Launch (splash) screen:** a solid, bright green background (the same green as the game's `PaintColor.green`). It uses the `UILaunchScreen` Info.plist keys: `UIColorName` points to a `LaunchGreen` color asset, and `UIImageName` points to a white paintbrush/drop glyph. The level select screen then fades in.
+- **App icon:** a green background with a white SF Symbol-style glyph (`paintbrush.pointed.fill` over a `drop.fill`), exported as a single 1024×1024 image in `Assets.xcassets/AppIcon`. The icon also provides dark and tinted variants, kept on green.
+- Green is also the accent color (`AccentColor` asset) used for highlights such as drop-target outlines and the level-select checkmarks.
+
+### 6.1 Level select (first screen after launch)
+- Title **"Artiste"** in a big, friendly rounded font (`.system(.largeTitle, design: .rounded)`, heavy weight).
+- Directly below it, the subtitle ***A game for Nina, by Mom*** in a smaller italic font.
+- 15 large numbered tiles (3 rows × 5). Finished levels show a star or checkmark. All levels are unlocked.
 - A mute toggle in the corner.
 
 ### 6.2 Game screen (landscape)
+The game screen should look very similar to the library game:
 ```
 ┌────────────────────────────────────────────────────────────┐
-│ [◀ levels]          Level 4                     [🔊]       │
-│                                                            │
-│      ┌─────────┐                 ┌─────────┐               │
-│      │ TARGET  │                 │ CANVAS  │               │
-│      │  5×5    │                 │ 5×5 + ◆ │               │
-│      └─────────┘                 └─────────┘               │
-│                                                            │
-│ [▶ Play] [↺ Reset]   Tray:  ⬆ ➡ ⬅ ⬇   💧red 💧blue          │
-│                      Slots: ( )( )( )( )( )( )( )  [🗑]     │
+│ (◀)                    Level 4                      (🔊)   │
+│        ┌─────────┐              ┌─────────┐                │
+│        │ TARGET  │              │ CANVAS  │                │
+│        │  5×5    │              │ 5×5 + ◆ │                │
+│        └─────────┘              └─────────┘                │
+│ ╭────────╮ ╭───────╮                                       │
+│ │ ▶ Play │ │ ↺     │                                       │
+│ ╰────────╯ ╰───────╯                                       │
+│ ┌──────── cream tray bar ─────────────────────────────┐    │
+│ │  (⬆)(➡)(⬅)(⬇)    (💧)(💧)(💧)(💧)                     │    │
+│ └─────────────────────────────────────────────────────┘    │
+│ ████████ orange slot panel ████████████████████████████    │
+│   ( )( )( )( )( )( )( )( )( )                     (🗑)      │
 └────────────────────────────────────────────────────────────┘
 ```
-- The two grids sit side by side and are sized with `GeometryReader` to fill the space above the bottom panel.
-- The target grid is drawn with a frame like a picture.
-- The canvas shows a clear **current-location marker**: a bold paintbrush or diamond shape, outlined so it shows up on any colour.
-- Play is a big green button and Reset a big orange one. Both are at least 64 pt on iPad and 52 pt on iPhone.
-- Action tokens are round, colourful and chunky. Each arrow is a white arrow on a coloured circle, and each paint action is a paint-drop icon in its colour. They're at least 56 pt on iPad and 44 pt on iPhone.
-- **Slot limit:** at most 12 slots per level so the row fits on one line on the smallest supported iPhone in landscape. Level design must respect this.
-- The background is a soft, light colour so the primary colours stand out.
+**Visual style**
+- **Background:** soft lavender with faint, lighter vertical zig-zag stripes, drawn with a SwiftUI `Path`/`Canvas`.
+- **Header:** a round, dark back button in the top-left (`arrow.left` on a dark circle) and a subtle, semi-transparent "Level N" title at the top center. A mute toggle (`speaker.wave.2.fill` / `speaker.slash.fill`) sits top-right.
+- **Grids:** the target (left) and canvas (right) sit side by side. Each is a 5×5 grid of square cells with thin dark grid lines and a dark outer border. Both are sized with `GeometryReader` to fill the space above the bottom panel. Unpainted cells are very pale gray/white.
+- **Current-location marker:** a purple diamond (`suit.diamond.fill`, rotated slightly) inside the current cell, with a white outline so it shows up on any color.
+- **Play button:** a bright blue rounded-rectangle button that sits like a tab on the top-left edge of the tray, with an orange rim (`play.fill` + "Play"). **Reset** sits beside it in the same style, in orange (`arrow.counterclockwise`). Both are at least 64 pt tall on iPad and 52 pt on iPhone.
+- **Tray bar:** a cream/pale-yellow rounded bar with an orange border. It holds the action tokens:
+  - **Arrow tokens:** white SF Symbol arrows (`arrow.up`, `arrow.right`, `arrow.left`, `arrow.down`) on red circles with a white ring.
+  - **Paint tokens:** a `drop.fill` in the paint color on a white circle with a light ring.
+  - Tokens are at least 56 pt on iPad and 44 pt on iPhone.
+- **Slot panel:** a warm orange panel along the bottom. Empty slots are slightly darker orange circles, the same size as the tokens. Filled slots show the token. The trash target (`trash.fill` in a large circle) sits at the right end of the panel.
+- **Slot limit:** at most 12 slots per level (reference solution ≤ 10, plus the 2 extra), so the row fits on one line on the smallest supported iPhone in landscape.
 
 ### 6.3 Success overlay
 - The game screen dims, and fireworks fill the screen. They're particle bursts drawn with `TimelineView` + `Canvas` in red, blue, green and yellow.
@@ -134,7 +151,7 @@ The design has three layers, each with one clear job.
 - `PaintColor` (enum, `Codable`).
 - `Direction` (enum) and `Action` (enum: `.move(Direction)`, `.paint(PaintColor)`, `Codable`, `Hashable`).
 - `Position` (row, col) and `Grid` (5×5 array of `PaintColor?`, with `subscript`, `contains(_:)`, `==`).
-- `Level` (`id`, `start: Position`, `initial: Grid`, `target: Grid`, `solution: [Action]`, `palette: [PaintColor]`). `slotCount` is computed as `solution.count`.
+- `Level` (`id`, `start: Position`, `initial: Grid`, `target: Grid`, `solution: [Action]`, `palette: [PaintColor]`). `slotCount` is computed as `solution.count + 2`.
 - `Interpreter`: `func steps(program: [Action?], from: Position, on: Grid) -> [Step]`. It returns a list of `Step` values, one per filled slot. Each `Step` holds the slot index, the action, the resulting position and grid, and an outcome (`.ok` or `.bumped`). The list stops at the first bump. Because the whole run is worked out up front, the engine stays simple to test and the view model only has to play back the steps.
 
 ### 7.2 `Game/` — state and orchestration
@@ -162,25 +179,25 @@ The design has three layers, each with one clear job.
   "palette": ["red", "blue"]
 }
 ```
-Rows are 5-character strings: `R`/`B`/`G`/`Y` for colours and `.` for empty (white).
+Rows are 5-character strings: `R`/`B`/`G`/`Y` for colors and `.` for empty (white).
 
 ## 8. Level design (15 levels)
 
 Rules every level must follow:
-- `initial` and `target` differ only in cells that `target` paints. The target has **no** empty cells, so every finished picture is full of colour.
+- `initial` and `target` differ only in cells that `target` paints. The target has **no** empty cells, so every finished picture is full of color.
 - Running `solution` from `start` on `initial` produces exactly `target`, and never goes off the grid.
-- `solution.count` ≤ 12.
-- `palette` contains every colour that `solution` uses and matches the colour schedule in §4.2.
+- `solution.count` ≤ 10 (so the slot count, `solution.count + 2`, is ≤ 12).
+- `palette` contains every color that `solution` uses and matches the color schedule in §4.2.
 
 Difficulty ramp (rough guide):
-| Levels | Empty cells | Slots | Idea introduced |
+| Levels | Empty cells | Solution length (slots = +2) | Idea introduced |
 |---|---|---|---|
 | 1–2 | 1 | 2–3 | Move then paint |
-| 3–4 | 2 | 4–5 | Two colours, two moves |
-| 5–6 | 2–3 | 5–7 | Green appears; turning corners |
-| 7–9 | 3–4 | 6–9 | Downward paths, mixed colours |
-| 10–12 | 3–4 | 7–10 | Yellow appears |
-| 13–15 | 4–5 | 9–12 | Longer paths, all four colours |
+| 3–4 | 2 | 3–4 | Two colors, two moves |
+| 5–6 | 2–3 | 4–6 | Green appears; turning corners |
+| 7–9 | 3–4 | 5–7 | Downward paths, mixed colors |
+| 10–12 | 3–4 | 6–8 | Yellow appears |
+| 13–15 | 4–5 | 8–10 | Longer paths, all four colors |
 
 Patterns are original: checkerboards, stripes, diagonals, simple shapes (a heart, a smiley, a flag).
 
@@ -197,13 +214,13 @@ Patterns are original: checkerboards, stripes, diagonals, simple shapes (a heart
 - Each action changes the position or grid correctly.
 - An off-grid move in each direction gives `.bumped`, and the run stops there.
 - Empty slots are skipped.
-- Painting over an existing colour.
+- Painting over an existing color.
 - A different program that still reaches the target counts as success.
 
-**Level data tests** (parameterised over all 15 levels)
+**Level data tests** (parameterized over all 15 levels)
 - JSON decodes, and each grid is exactly 5×5.
 - Running `solution` on `initial` gives `target` with no bump.
-- `solution.count` ≤ 12; the target has no empty cells; `palette` covers the colours used and follows the §4.2 schedule.
+- `solution.count` ≤ 10 and `slotCount == solution.count + 2`; the target has no empty cells; `palette` covers the colors used and follows the §4.2 schedule.
 
 **View model tests**
 - State changes: Ready → Running → Succeeded/Failed. Play is blocked in Failed until `reset()`. `reset()` restores the marker and canvas but keeps the slots.
@@ -217,7 +234,7 @@ Patterns are original: checkerboards, stripes, diagonals, simple shapes (a heart
 
 - Every token, slot, cell and button has a VoiceOver label (for example "Paint red", "Slot 3, move right", "Row 2, column 4, blue").
 - Because editing is drag-only, slots also get accessibility actions ("Set to…", "Clear") so VoiceOver and Switch Control users can still play.
-- Colours always come with shape cues: paint drops sit inside coloured circles, and the start marker stands out by shape, not just colour.
+- Colors always come with shape cues: paint drops have a distinct drop shape on a white circle, arrows have arrow shapes on red circles, and the start marker stands out by shape, not just color.
 
 ## 12. Suggested project structure
 ```
@@ -228,7 +245,7 @@ Artiste/
   Views/    LevelSelectView.swift, GameView.swift, GridView.swift, ActionTokenView.swift,
             TrayView.swift, SlotRowView.swift, TrashTargetView.swift,
             ControlButtonsView.swift, SuccessOverlayView.swift, FireworksView.swift
-  Resources/ levels.json, Sounds/, Assets.xcassets (AppIcon, colours)
+  Resources/ levels.json, Sounds/, Assets.xcassets (green AppIcon, LaunchGreen, AccentColor, paint colors)
 ArtisteTests/
   InterpreterTests.swift, LevelDataTests.swift, GameViewModelTests.swift
 ```
