@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// The princess who lives in a castle, drawn in code and animated: she blinks, and in the waving pose
-/// she greets with three swings of her arm, then waves now and then.
+/// she greets with three swings of her arm, then waves now and then. It redraws only while she moves.
 struct PrincessView: View {
     enum Pose: Sendable {
         case idle, waving
@@ -22,13 +22,14 @@ struct PrincessView: View {
 
     var body: some View {
         let waving = pose == .waving && !faceOnly
-        TimelineView(.animation) { timeline in
+        let waves = waving && !reduceMotion
+        TimelineView(PrincessSchedule(start: appeared, waves: waves)) { timeline in
             let time = timeline.date.timeIntervalSince(appeared)
             PrincessFigure(
                 look: .look(for: kind),
                 waving: waving,
                 faceOnly: faceOnly,
-                armAngle: waving && !reduceMotion ? PrincessMotion.armAngle(at: time) : 0,
+                armAngle: waves ? PrincessMotion.armAngle(at: time) : 0,
                 eyeOpenness: PrincessMotion.eyeOpenness(at: time)
             )
         }

@@ -177,7 +177,8 @@ enum PrincessParts {
     }
 }
 
-/// When she waves and blinks, as pure functions of the seconds since she appeared.
+/// When she waves and blinks, as pure functions of the seconds since she appeared,
+/// and when the figure needs redrawing so it stays idle between them.
 enum PrincessMotion {
     /// How far the arm swings each way, in degrees.
     static let swing = 20.0
@@ -208,14 +209,63 @@ enum PrincessMotion {
         return swing * sin(2 * .pi * wave / idleWaveLength)
     }
 
+    /// How often the figure redraws while she is moving.
+    static let frameInterval = 1.0 / 60
+
+    /// Whether the arm or eyes are off their rest at this time. Between blinks and waves she is perfectly still.
+    /// - Parameter waves: whether her arm waves; false for idle, face-only and Reduce Motion.
+    static func isMoving(at time: Double, waves: Bool) -> Bool {
+        nextMotion(endingAfter: time, waves: waves).contains(time)
+    }
+
+    /// When the figure next needs drawing: a frame later while she moves (landing exactly on the end of the
+    /// blink or wave, so she comes to rest), otherwise not until her next blink or wave starts.
+    static func nextUpdate(after time: Double, waves: Bool) -> Double {
+        let window = nextMotion(endingAfter: time, waves: waves)
+        return window.contains(time) ? min(time + frameInterval, window.upperBound) : window.lowerBound
+    }
+
+    /// The blink or wave that contains `time`, or else the next one to start.
+    private static func nextMotion(endingAfter time: Double, waves: Bool) -> Range<Double> {
+        let blink = nextBlink(endingAfter: time)
+        guard waves else { return blink }
+        let wave = nextWave(endingAfter: time)
+        if blink.contains(time) { return blink }
+        if wave.contains(time) { return wave }
+        return blink.lowerBound < wave.lowerBound ? blink : wave
+    }
+
+    /// Blinks start at each gap boundary, repeating every cycle of gaps; none at the very start.
+    private static func nextBlink(endingAfter time: Double) -> Range<Double> {
+        let cycle = blinkGaps.reduce(0, +)
+        var cycleIndex = max(0, Int(((time - blinkLength) / cycle).rounded(.down)))
+        while true {
+            var start = Double(cycleIndex) * cycle
+            for gap in blinkGaps {
+                start += gap
+                if start + blinkLength > time { return start..<(start + blinkLength) }
+            }
+            cycleIndex += 1
+        }
+    }
+
+    /// The greeting, then one swing at the end of every `idleWaveEvery` seconds.
+    private static func nextWave(endingAfter time: Double) -> Range<Double> {
+        if time < greetingEnd { return greetingStart..<greetingEnd }
+        let firstEnd = greetingEnd + idleWaveEvery
+        var index = max(0, Int(((time - firstEnd) / idleWaveEvery).rounded(.down)))
+        while true {
+            let end = firstEnd + Double(index) * idleWaveEvery
+            if end > time { return (end - idleWaveLength)..<end }
+            index += 1
+        }
+    }
+
     /// 1 when her eyes are open, 0 when shut.
     static func eyeOpenness(at time: Double) -> Double {
-        guard let first = blinkGaps.first, time >= first else { return 1 }
-        let cycle = blinkGaps.reduce(0, +)
-        var sinceBlink = time.truncatingRemainder(dividingBy: cycle)
-        for gap in blinkGaps where sinceBlink >= gap {
-            sinceBlink -= gap
-        }
+        let blink = nextBlink(endingAfter: time)
+        guard blink.contains(time) else { return 1 }
+        let sinceBlink = time - blink.lowerBound
         let third = blinkLength / 3
         switch sinceBlink {
         case ..<third: return 1 - sinceBlink / third
@@ -254,5 +304,22 @@ struct PrincessFigure: View {
                                armAngle: armAngle, eyeOpenness: eyeOpenness, in: context)
         }
         .aspectRatio(box.width / box.height, contentMode: .fit)
+    }
+}
+
+/// Redraws a princess at frame rate only during a blink or wave, and not at all between them.
+struct PrincessSchedule: TimelineSchedule {
+    /// When she appeared: time zero for `PrincessMotion`.
+    let start: Date
+    let waves: Bool
+
+    func entries(from startDate: Date, mode: TimelineScheduleMode) -> AnyIterator<Date> {
+        var next = startDate
+        return AnyIterator {
+            let current = next
+            let time = current.timeIntervalSince(start)
+            next = start.addingTimeInterval(PrincessMotion.nextUpdate(after: time, waves: waves))
+            return current
+        }
     }
 }
