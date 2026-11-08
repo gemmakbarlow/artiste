@@ -53,6 +53,18 @@ import Testing
         #expect(progress.crownedLevelIDs.contains(1))
     }
 
+    @Test func nextOnCastleVMRebuildsLevelOnSameShape() async {
+        let castle = Castle.castle(.rose)
+        let vm = makeVM(castle: castle)
+        fill(vm, vm.level.solution)
+        await vm.play()
+        vm.next()
+        #expect(vm.level.id == 2)
+        #expect(vm.level.target == CastlePuzzles.level(2, in: castle).target)
+        #expect(vm.canvas.shape == castle.shape)
+        #expect(vm.state == .ready)
+    }
+
     @Test func normalLevelDoesNotCrown() async {
         let vm = makeVM()
         fill(vm, vm.level.solution)
