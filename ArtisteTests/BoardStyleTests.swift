@@ -24,6 +24,14 @@ import Testing
         #expect(names == Castle.castle(kind).colorNames)
     }
 
+    /// Pale paints get an outlined tray drop and a grout-colored motif; the classic colors never do.
+    @Test func paleCastlePaintsAreFlagged() {
+        #expect(BoardStyle.castle(.ice).isPale(.yellow))
+        #expect(BoardStyle.castle(.tower).isPale(.red))
+        #expect(!BoardStyle.castle(.ice).isPale(.blue))
+        #expect(!PaintColor.allCases.contains { BoardStyle.classic.isPale($0) })
+    }
+
     /// WCAG relative luminance of a 0xRRGGBB value.
     private static func luminance(_ hex: UInt32) -> Double {
         func channel(_ shift: UInt32) -> Double {

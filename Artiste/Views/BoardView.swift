@@ -134,10 +134,7 @@ struct BoardView: View {
 
     /// Faint white, or the grout color on tiles too pale for white to show.
     private func motifColor(_ slot: PaintColor) -> Color {
-        let hex = style.hex(slot)
-        let r = Double((hex >> 16) & 0xFF), g = Double((hex >> 8) & 0xFF), b = Double(hex & 0xFF)
-        let lightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255
-        return lightness > 0.9 ? style.grout : .white.opacity(0.67)
+        style.isPale(slot) ? style.grout : .white.opacity(0.67)
     }
 
     // MARK: Shared

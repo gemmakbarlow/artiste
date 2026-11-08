@@ -299,16 +299,45 @@ private struct DimWithHole: Shape {
     .environment(\.verticalSizeClass, .compact)
 }
 
-/// The tallest castle at the most slots, on the smallest phone.
-#Preview("iPhone SE, Rose castle, 12 slots", traits: .fixedLayout(width: 667, height: 375)) {
-    @Previewable @State var progress = ProgressStore(defaults: UserDefaults(suiteName: "preview")!)
-    NavigationStack {
-        GameView(levelIndex: 14, castle: .rose)
-            .toolbar(.hidden, for: .navigationBar)
+/// Level 15 in a castle on the smallest phone: the most slots a castle level has (12 in the bayou palace).
+/// Check that the slots fit, the roofs stay clear of Back and Sound, and the canvas squares are at least 20 pt.
+private struct SmallestPhoneCastlePreview: View {
+    let kind: CastleKind
+    @State private var progress = ProgressStore(defaults: UserDefaults(suiteName: "preview")!)
+
+    var body: some View {
+        NavigationStack {
+            GameView(levelIndex: 14, castle: kind)
+                .toolbar(.hidden, for: .navigationBar)
+        }
+        .environment(progress)
+        .environment(AppRouter(levelCount: 15))
+        .environment(\.levels, LevelStore.loadBundled())
+        .environment(\.horizontalSizeClass, .compact)
+        .environment(\.verticalSizeClass, .compact)
     }
-    .environment(progress)
-    .environment(AppRouter(levelCount: 15))
-    .environment(\.levels, LevelStore.loadBundled())
-    .environment(\.horizontalSizeClass, .compact)
-    .environment(\.verticalSizeClass, .compact)
+}
+
+#Preview("iPhone SE, Desert palace, level 15", traits: .fixedLayout(width: 667, height: 375)) {
+    SmallestPhoneCastlePreview(kind: .desert)
+}
+
+#Preview("iPhone SE, Ice palace, level 15", traits: .fixedLayout(width: 667, height: 375)) {
+    SmallestPhoneCastlePreview(kind: .ice)
+}
+
+#Preview("iPhone SE, Tall tower, level 15", traits: .fixedLayout(width: 667, height: 375)) {
+    SmallestPhoneCastlePreview(kind: .tower)
+}
+
+#Preview("iPhone SE, Rose castle, level 15", traits: .fixedLayout(width: 667, height: 375)) {
+    SmallestPhoneCastlePreview(kind: .rose)
+}
+
+#Preview("iPhone SE, Bayou palace, level 15", traits: .fixedLayout(width: 667, height: 375)) {
+    SmallestPhoneCastlePreview(kind: .bayou)
+}
+
+#Preview("iPhone SE, Island fort, level 15", traits: .fixedLayout(width: 667, height: 375)) {
+    SmallestPhoneCastlePreview(kind: .island)
 }

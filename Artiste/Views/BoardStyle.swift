@@ -14,6 +14,14 @@ struct BoardStyle: Sendable, Equatable {
     func hex(_ slot: PaintColor) -> UInt32 { hexes[slot] ?? 0 }
     func name(_ slot: PaintColor) -> String { names[slot] ?? slot.rawValue }
 
+    /// Paints too pale to show against white, such as snow white or lavender.
+    /// Their tiles draw the motif in the grout color, and their tray drops get a grout-colored outline.
+    func isPale(_ slot: PaintColor) -> Bool {
+        let hex = hex(slot)
+        let r = Double((hex >> 16) & 0xFF), g = Double((hex >> 8) & 0xFF), b = Double(hex & 0xFF)
+        return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.9
+    }
+
     static let classic = BoardStyle(
         hexes: [.red: 0xE53935, .blue: 0x1E88E5, .green: 0x2DB84C, .yellow: 0xFDD835],
         names: Dictionary(uniqueKeysWithValues: PaintColor.allCases.map { ($0, $0.rawValue) }),

@@ -16,17 +16,25 @@ struct LevelSelectView: View {
         horizontalSizeClass == .regular && verticalSizeClass == .regular
     }
 
+    /// On a landscape phone the Castle Mode switch sits beside the title, so past this text size it would cover it.
+    /// The iPad has room to spare.
+    private var headerTypeLimit: DynamicTypeSize {
+        isPad ? .accessibility5 : .xLarge
+    }
+
     var body: some View {
         ZStack {
             ZigZagBackground()
             VStack(spacing: 12) {
                 titleBlock
+                    .dynamicTypeSize(...headerTypeLimit)
                 tiles
             }
             .padding(.horizontal, 24)
             .padding(.vertical, 12)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             castleModeSwitch
+                .dynamicTypeSize(...headerTypeLimit)
                 .padding(.top, 12)
                 .padding(.leading, 20)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)

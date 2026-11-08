@@ -24,6 +24,12 @@ struct PrincessRevealView: View {
         "The \(castle.princessName) waves hello! Good job!"
     }
 
+    /// Her own VoiceOver label. It describes her rather than repeating the announcement,
+    /// so VoiceOver doesn't say "waves hello! Good job!" twice when its focus lands on her.
+    static func princessLabel(for castle: Castle) -> String {
+        "The \(castle.princessName), waving"
+    }
+
     var body: some View {
         PrincessRevealScene(castle: castle, isLastLevel: isLastLevel, stage: stage,
                             reduceMotion: reduceMotion, onNext: onNext, onHome: onHome)
@@ -159,7 +165,7 @@ struct PrincessRevealScene: View {
                     .frame(width: princessWidth, height: princessHeight)
                     .position(x: size.width / 2, y: size.height / 2)
                     .accessibilityElement(children: .ignore)
-                    .accessibilityLabel(PrincessRevealView.announcement(for: castle))
+                    .accessibilityLabel(PrincessRevealView.princessLabel(for: castle))
                     .accessibilityAddTraits(.isHeader)
                 sparkles(princessHeight: princessHeight)
                     .frame(width: princessWidth, height: princessHeight)
