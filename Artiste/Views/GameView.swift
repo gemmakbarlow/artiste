@@ -57,7 +57,7 @@ struct GameView: View {
         .overlayPreferenceValue(CanvasBoundsKey.self) { anchor in
             if let vm, let castle = vm.castle, vm.state == .succeeded, let anchor {
                 GeometryReader { proxy in
-                    reveal(vm, castle: castle, over: proxy[anchor])
+                    reveal(vm, castle: castle, over: proxy[anchor], screenHeight: proxy.size.height)
                 }
                 .ignoresSafeArea()
                 .transition(.opacity)
@@ -226,7 +226,7 @@ struct GameView: View {
 
     /// The princess reveal over the canvas castle, on a full-screen dim that also blocks every other tap.
     /// The reveal dims its own frame, so the screen dim leaves a hole there and the whole screen dims evenly.
-    private func reveal(_ vm: GameViewModel, castle: Castle, over canvas: CGRect) -> some View {
+    private func reveal(_ vm: GameViewModel, castle: Castle, over canvas: CGRect, screenHeight: CGFloat) -> some View {
         ZStack {
             DimWithHole(hole: canvas)
                 .fill(.black.opacity(0.25), style: FillStyle(eoFill: true))
@@ -234,6 +234,7 @@ struct GameView: View {
                 .onTapGesture {}
                 .accessibilityHidden(true)
             PrincessRevealView(castle: castle, isLastLevel: vm.isLastLevel,
+                               princessHeight: PrincessRevealView.princessHeight(screenHeight: screenHeight),
                                onNext: { router.nextAfterCastleLevel() },
                                onHome: { router.backToLevelSelect() })
                 .frame(width: canvas.width, height: canvas.height)

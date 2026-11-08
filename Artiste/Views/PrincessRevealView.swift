@@ -6,17 +6,26 @@ import SwiftUI
 struct PrincessRevealView: View {
     let castle: Castle
     let isLastLevel: Bool
+    /// Her full height. Nil sizes her from the castle frame instead (used by previews).
+    let princessHeight: CGFloat?
     let onNext: () -> Void
     let onHome: () -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var stage = PrincessRevealStage()
 
-    init(castle: Castle, isLastLevel: Bool, onNext: @escaping () -> Void, onHome: @escaping () -> Void) {
+    init(castle: Castle, isLastLevel: Bool, princessHeight: CGFloat? = nil,
+         onNext: @escaping () -> Void, onHome: @escaping () -> Void) {
         self.castle = castle
         self.isLastLevel = isLastLevel
+        self.princessHeight = princessHeight
         self.onNext = onNext
         self.onHome = onHome
+    }
+
+    /// Her height on a screen of this height: about 55% of it (spec §6).
+    static func princessHeight(screenHeight: CGFloat) -> CGFloat {
+        screenHeight * PrincessRevealScene.princessShare
     }
 
     /// What VoiceOver says in place of "Good job!".
@@ -32,7 +41,8 @@ struct PrincessRevealView: View {
 
     var body: some View {
         PrincessRevealScene(castle: castle, isLastLevel: isLastLevel, stage: stage,
-                            reduceMotion: reduceMotion, onNext: onNext, onHome: onHome)
+                            reduceMotion: reduceMotion, princessHeight: princessHeight,
+                            onNext: onNext, onHome: onHome)
             .task { await play() }
     }
 
@@ -135,10 +145,13 @@ struct PrincessRevealScene: View {
     let isLastLevel: Bool
     let stage: PrincessRevealStage
     var reduceMotion = false
+    /// Her full height. When set (the game passes 55% of the screen), she stands with her feet at the
+    /// castle's door, the frame's bottom edge, and may rise above the frame. Nil sizes her from the frame.
+    var princessHeight: CGFloat? = nil
     let onNext: () -> Void
     let onHome: () -> Void
 
-    /// Her full height, as a share of the area's height.
+    /// Her full height, as a share of the screen's height (or of the area's, when no height is given).
     static let princessShare: CGFloat = 0.55
     static let hopHeight: CGFloat = 12
 
@@ -147,9 +160,11 @@ struct PrincessRevealScene: View {
             let size = proxy.size
             let cell = min(size.height / CGFloat(CastleLayout.rows(castle)),
                            size.width / CGFloat(castle.shape.width))
-            let princessHeight = size.height * Self.princessShare
+            let princessHeight = self.princessHeight ?? size.height * Self.princessShare
             let princessWidth = princessHeight * 100 / 150
-            let princessBottom = (size.height + princessHeight) / 2
+            // Given a screen-based height she stands on the door sill; otherwise she is centered in the frame.
+            let princessBottom = self.princessHeight == nil ? (size.height + princessHeight) / 2 : size.height
+            let princessCenterY = princessBottom - princessHeight / 2
             let door = CGSize(width: 1.4 * cell, height: 2 * cell)
             ZStack(alignment: .topLeading) {
                 // Exactly this frame: the game screen dims the rest. On small castles the buttons reach
@@ -163,13 +178,13 @@ struct PrincessRevealScene: View {
                     .opacity(stage.dimmed && !stage.showsButtons ? 1 : 0)
                 princess(drop: size.height - princessBottom)
                     .frame(width: princessWidth, height: princessHeight)
-                    .position(x: size.width / 2, y: size.height / 2)
+                    .position(x: size.width / 2, y: princessCenterY)
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(PrincessRevealView.princessLabel(for: castle))
                     .accessibilityAddTraits(.isHeader)
                 sparkles(princessHeight: princessHeight)
                     .frame(width: princessWidth, height: princessHeight)
-                    .position(x: size.width / 2, y: size.height / 2)
+                    .position(x: size.width / 2, y: princessCenterY)
                     .opacity(stage.sparkling ? 1 : 0)
                     .accessibilityHidden(true)
                 if stage.showsButtons {
