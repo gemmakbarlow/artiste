@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		05A683B591672860E3579FB5 /* CastlePuzzles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 325D6F553EFF083542F29AC4 /* CastlePuzzles.swift */; };
+		0A8DA15DC61536C6807070A3 /* PrincessRevealTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977692BB208CF39B16568311 /* PrincessRevealTests.swift */; };
 		0E2163889189F1EDB4E37560 /* BoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6793DDDA675B1B1D8DE22BF8 /* BoardView.swift */; };
 		186DB2B2D9A82BCD1F8BC9EB /* PrincessParts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 440E300E611A8DCA24C2F15D /* PrincessParts.swift */; };
 		207E1F5C44B13C4A46694A92 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F60EA7F80F62A70AFCD9E /* Theme.swift */; };
@@ -40,6 +41,7 @@
 		B52157F46DF79D7DE24C71A7 /* Castle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 374BF4DF3143D66237AA8225 /* Castle.swift */; };
 		B7E93D1155CE6C95261765AC /* TrayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7623EB469F5E7EC3A2084E00 /* TrayView.swift */; };
 		C099038BBE44D2F46B9F19BC /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E67F077EDA7D9B5C525AA3 /* SoundPlayer.swift */; };
+		C0C42242297188FD1846EC43 /* PrincessRevealView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD132BC54490FA66BF0C5102 /* PrincessRevealView.swift */; };
 		C1970B4BCD2CAE067BD6CD45 /* ArtisteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93BF102EF3394AA7A81CA480 /* ArtisteApp.swift */; };
 		C2EEE66082567977139880A7 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71DBE0A59C45A4110E77FF03 /* Action.swift */; };
 		C80040003C9A3B1A6AFD01DF /* Interpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4032FAD506EA8DEEBA3D01 /* Interpreter.swift */; };
@@ -100,6 +102,7 @@
 		92CD5EE166002065BCA90BB5 /* ArtisteTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ArtisteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		93BF102EF3394AA7A81CA480 /* ArtisteApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtisteApp.swift; sourceTree = "<group>"; };
 		95ED9FF2DE3D0B3D893B3426 /* CastleArtView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CastleArtView.swift; sourceTree = "<group>"; };
+		977692BB208CF39B16568311 /* PrincessRevealTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrincessRevealTests.swift; sourceTree = "<group>"; };
 		9856D0CEF5B56867A998E22C /* LevelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelStore.swift; sourceTree = "<group>"; };
 		9C5CF969A06050D3312C686E /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		A22DE03CD59A2F40CE4855B3 /* BoardStyleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardStyleTests.swift; sourceTree = "<group>"; };
@@ -115,6 +118,7 @@
 		F21A992946CFA3FAB784D264 /* PaintColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaintColor.swift; sourceTree = "<group>"; };
 		F32BF423F87AA3EC79031D27 /* ControlButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlButtonsView.swift; sourceTree = "<group>"; };
 		FAB9D43688293AD3A13B99D8 /* LevelSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelSelectView.swift; sourceTree = "<group>"; };
+		FD132BC54490FA66BF0C5102 /* PrincessRevealView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrincessRevealView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -141,6 +145,7 @@
 				BEC9A8B47550B5A4562F6D41 /* FireworksView.swift */,
 				C8199D950942560033476BF4 /* GameView.swift */,
 				FAB9D43688293AD3A13B99D8 /* LevelSelectView.swift */,
+				FD132BC54490FA66BF0C5102 /* PrincessRevealView.swift */,
 				9C5CF969A06050D3312C686E /* RootView.swift */,
 				19BAF40E507890CAEF1559AC /* SlotRowView.swift */,
 				F0C4B4B9E2BD232D2F5B7161 /* SuccessOverlayView.swift */,
@@ -205,6 +210,7 @@
 				2ADE8F1A8466F87E78CC3D8D /* GridTests.swift */,
 				328D3A70EDB24785FA037E55 /* InterpreterTests.swift */,
 				A9577A6451DBA26ED44ABB60 /* LevelDataTests.swift */,
+				977692BB208CF39B16568311 /* PrincessRevealTests.swift */,
 				39ED531C944B32D6AC432E45 /* ProgressStoreTests.swift */,
 				6CBC49C7BBB1DEE96AB61AF9 /* SmokeTests.swift */,
 			);
@@ -334,6 +340,7 @@
 				472FA463C68A514DC1384DFF /* GridTests.swift in Sources */,
 				2CCB9004B4EA051866F6FC89 /* InterpreterTests.swift in Sources */,
 				E3365B0F57422502F31B25CA /* LevelDataTests.swift in Sources */,
+				0A8DA15DC61536C6807070A3 /* PrincessRevealTests.swift in Sources */,
 				39AECEC26882E240270DDD92 /* ProgressStoreTests.swift in Sources */,
 				B1398BE8ECE4FFFAC1304A85 /* SmokeTests.swift in Sources */,
 			);
@@ -366,6 +373,7 @@
 				5477A412432EF51962CC9F6E /* LevelStore.swift in Sources */,
 				B47FEF6B12A0D0A9237CC824 /* PaintColor.swift in Sources */,
 				186DB2B2D9A82BCD1F8BC9EB /* PrincessParts.swift in Sources */,
+				C0C42242297188FD1846EC43 /* PrincessRevealView.swift in Sources */,
 				8B70641E8FFB43B69B170434 /* PrincessView.swift in Sources */,
 				DD8AAD0349124B3D7C3C4824 /* ProgressStore.swift in Sources */,
 				517334215253078AB6D69A4F /* RootView.swift in Sources */,
