@@ -32,6 +32,17 @@ import Testing
                 #expect(abs(arm) < 1e-9 && abs(eyes - 1) < 1e-9, "moved at rest, t = \(time)")
             }
         }
+        // And the converse: mid-blink her eyes are shut, mid-wave her arm is off its rest.
+        for blinkMiddle in [2.26, 4.96, 7.36] {
+            #expect(PrincessMotion.isMoving(at: blinkMiddle, waves: waves))
+            #expect(PrincessMotion.eyeOpenness(at: blinkMiddle) < 1)
+        }
+        if waves {
+            for waveMoment in [0.375, 5.3, 9.3] {
+                #expect(PrincessMotion.isMoving(at: waveMoment, waves: true))
+                #expect(abs(PrincessMotion.armAngle(at: waveMoment)) > 1)
+            }
+        }
     }
 
     /// At rest the timeline sleeps until the next blink or wave; while moving it ticks at frame rate,
@@ -59,5 +70,40 @@ import Testing
         #expect(blinkTicks.count == 8)
         #expect(abs(dates[10] - 4.9) < 1e-9)
         #expect(!dates.contains { $0 > 2.33 && $0 < 4.9 - 1e-9 })
+    }
+
+    /// With a real start date (`Date.now` is about 8e8 s after the reference date, where a `Date` only resolves
+    /// to about 1e-7 s), the schedule must still always move forward, never sleep longer than the longest
+    /// still stretch, and tick at frame rate inside every blink and wave.
+    @Test(arguments: [
+        (8e8 + 0.123456, 0.0, true),
+        (8e8 + 0.123456, 0.0, false),
+        (8.123e8 + 0.987654321, 10.0001, true),
+        (8.123e8 + 0.987654321, 3.33333, false),
+    ])
+    func scheduleAlwaysAdvancesWithARealStartDate(startSeconds: Double, fromOffset: Double, waves: Bool) {
+        let start = Date(timeIntervalSinceReferenceDate: startSeconds)
+        let iterator = PrincessSchedule(start: start, waves: waves)
+            .entries(from: start.addingTimeInterval(fromOffset), mode: .normal)
+        var times: [Double] = []
+        while times.count < 2000 || times.last! - times.first! < 60 {
+            guard let date = iterator.next(), times.count < 100_000 else { break }
+            times.append(date.timeIntervalSince(start))
+        }
+        #expect(times.count >= 2000)
+        #expect(times.last! - times.first! >= 60)
+        let longestRest = PrincessMotion.blinkGaps.max()! - PrincessMotion.blinkLength
+        var stuck = 0, tooLong = 0, slowWhileMoving = 0
+        for (time, next) in zip(times, times.dropFirst()) {
+            let gap = next - time
+            if gap <= 0 { stuck += 1 }
+            if gap > longestRest + 1e-4 { tooLong += 1 }
+            if PrincessMotion.isMoving(at: time, waves: waves), gap > PrincessMotion.frameInterval + 1e-4 {
+                slowWhileMoving += 1
+            }
+        }
+        #expect(stuck == 0)
+        #expect(tooLong == 0)
+        #expect(slowWhileMoving == 0)
     }
 }

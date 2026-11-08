@@ -318,7 +318,10 @@ struct PrincessSchedule: TimelineSchedule {
         return AnyIterator {
             let current = next
             let time = current.timeIntervalSince(start)
-            next = start.addingTimeInterval(PrincessMotion.nextUpdate(after: time, waves: waves))
+            let planned = start.addingTimeInterval(PrincessMotion.nextUpdate(after: time, waves: waves))
+            // A `Date` near now only resolves to about 1e-7 s, so a date planned for a window's edge can read
+            // back as just short of it, and would plan itself again. Always move on by at least half a frame.
+            next = max(planned, current.addingTimeInterval(PrincessMotion.frameInterval / 2))
             return current
         }
     }
