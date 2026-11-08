@@ -25,6 +25,8 @@
 		6D4B747201660AE128F35716 /* Level.swift in Sources */ = {isa = PBXBuildFile; fileRef = 474ADC1C3C9BCCDBF9ECCC46 /* Level.swift */; };
 		7D6DBA7792D2263220649703 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0931528317A716CA3E7DC6D2 /* Grid.swift */; };
 		8F9EA88ED3205FBABADDC434 /* SuccessOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C4B4B9E2BD232D2F5B7161 /* SuccessOverlayView.swift */; };
+		931E2EEFBE182C475CE2596F /* BoardStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A26724392F2F67458A1BA96 /* BoardStyle.swift */; };
+		999968EA6E0235B429DFC545 /* BoardStyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A22DE03CD59A2F40CE4855B3 /* BoardStyleTests.swift */; };
 		9C31C1D522A965C9340F253E /* SlotRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BAF40E507890CAEF1559AC /* SlotRowView.swift */; };
 		9F3B26149820845BF914D6B5 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8199D950942560033476BF4 /* GameView.swift */; };
 		A83BD83AA306E64CC02D2500 /* levels.json in Resources */ = {isa = PBXBuildFile; fileRef = DBA2125836FB8AE591F73B84 /* levels.json */; };
@@ -75,6 +77,7 @@
 		3B4032FAD506EA8DEEBA3D01 /* Interpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interpreter.swift; sourceTree = "<group>"; };
 		3D8347A2DCD812444A3C5554 /* ActionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionTests.swift; sourceTree = "<group>"; };
 		474ADC1C3C9BCCDBF9ECCC46 /* Level.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Level.swift; sourceTree = "<group>"; };
+		5A26724392F2F67458A1BA96 /* BoardStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardStyle.swift; sourceTree = "<group>"; };
 		6BD4B8C2141ADDE569CCDBC4 /* BoardShapeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardShapeTests.swift; sourceTree = "<group>"; };
 		6CBC49C7BBB1DEE96AB61AF9 /* SmokeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmokeTests.swift; sourceTree = "<group>"; };
 		6D684CFDFE9FC014287BCDFF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -89,6 +92,7 @@
 		93BF102EF3394AA7A81CA480 /* ArtisteApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtisteApp.swift; sourceTree = "<group>"; };
 		9856D0CEF5B56867A998E22C /* LevelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelStore.swift; sourceTree = "<group>"; };
 		9C5CF969A06050D3312C686E /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		A22DE03CD59A2F40CE4855B3 /* BoardStyleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardStyleTests.swift; sourceTree = "<group>"; };
 		A84C11BCBFC4E4546F2177F3 /* ZigZagBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZigZagBackground.swift; sourceTree = "<group>"; };
 		A9577A6451DBA26ED44ABB60 /* LevelDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelDataTests.swift; sourceTree = "<group>"; };
 		BBCA0497D98796707D37FF7E /* ActionTokenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionTokenView.swift; sourceTree = "<group>"; };
@@ -119,6 +123,7 @@
 				BBCA0497D98796707D37FF7E /* ActionTokenView.swift */,
 				7EC1E6AE56E2139F110DB375 /* AppEnvironment.swift */,
 				3A282376DE9CFF4742E75EE5 /* BackButtonView.swift */,
+				5A26724392F2F67458A1BA96 /* BoardStyle.swift */,
 				F32BF423F87AA3EC79031D27 /* ControlButtonsView.swift */,
 				BEC9A8B47550B5A4562F6D41 /* FireworksView.swift */,
 				C8199D950942560033476BF4 /* GameView.swift */,
@@ -170,6 +175,7 @@
 			children = (
 				3D8347A2DCD812444A3C5554 /* ActionTests.swift */,
 				6BD4B8C2141ADDE569CCDBC4 /* BoardShapeTests.swift */,
+				A22DE03CD59A2F40CE4855B3 /* BoardStyleTests.swift */,
 				0825D44E6DB2D7275CF7FC4E /* CastlePuzzleTests.swift */,
 				867E446DD522AAA521DC4392 /* CastleTests.swift */,
 				CBE01E6F9AC41AC58CAA5090 /* GameViewModelTests.swift */,
@@ -297,6 +303,7 @@
 			files = (
 				44A299314ED18CDE4DEE2638 /* ActionTests.swift in Sources */,
 				3DE7293F507D5CE86E8DCA18 /* BoardShapeTests.swift in Sources */,
+				999968EA6E0235B429DFC545 /* BoardStyleTests.swift in Sources */,
 				D3958B7DE6C2BF436D5239AF /* CastlePuzzleTests.swift in Sources */,
 				2A198BE2FFC1C40FB492ABDF /* CastleTests.swift in Sources */,
 				F683270B4AA4718179EA5E0E /* GameViewModelTests.swift in Sources */,
@@ -318,6 +325,7 @@
 				C1970B4BCD2CAE067BD6CD45 /* ArtisteApp.swift in Sources */,
 				F0C638EBFDCB43E328DD86F7 /* BackButtonView.swift in Sources */,
 				388799AB3B8659DCA0F77F54 /* BoardShape.swift in Sources */,
+				931E2EEFBE182C475CE2596F /* BoardStyle.swift in Sources */,
 				B52157F46DF79D7DE24C71A7 /* Castle.swift in Sources */,
 				05A683B591672860E3579FB5 /* CastlePuzzles.swift in Sources */,
 				FB66C0469011AC0B1E0D16D2 /* ControlButtonsView.swift in Sources */,

@@ -5,12 +5,13 @@ import SwiftUI
 struct SlotRowView: View {
     let vm: GameViewModel
     let metrics: Theme.Metrics
+    let style: BoardStyle
 
     var body: some View {
         HStack(spacing: metrics.spacing) {
             HStack(spacing: metrics.spacing) {
                 ForEach(vm.slots.indices, id: \.self) { index in
-                    SlotView(vm: vm, index: index, size: metrics.token)
+                    SlotView(vm: vm, index: index, size: metrics.token, style: style)
                 }
             }
             // Shakes when an action is tapped while every slot is full.
@@ -41,6 +42,7 @@ private struct SlotView: View {
     let vm: GameViewModel
     let index: Int
     let size: CGFloat
+    let style: BoardStyle
 
     var body: some View {
         let action = vm.slots[index]
@@ -62,12 +64,12 @@ private struct SlotView: View {
             Button {
                 vm.remove(at: index)
             } label: {
-                ActionTokenView(action: action, size: size)
+                ActionTokenView(action: action, size: size, style: style)
             }
             .buttonStyle(TokenPressStyle())
             .disabled(!vm.canEdit)
             .transition(.scale.combined(with: .opacity))
-            .accessibilityLabel("Slot \(index + 1), \(ActionTokenView.label(action).lowercased())")
+            .accessibilityLabel("Slot \(index + 1), \(ActionTokenView.label(action, style: style).lowercased())")
             .accessibilityHint(vm.canEdit ? "Double-tap to remove." : "")
         } else {
             Circle()

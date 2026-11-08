@@ -4,6 +4,7 @@ import SwiftUI
 struct TrayView: View {
     let vm: GameViewModel
     let metrics: Theme.Metrics
+    let style: BoardStyle
 
     var body: some View {
         HStack(spacing: metrics.spacing * 2) {
@@ -25,12 +26,12 @@ struct TrayView: View {
                 Button {
                     vm.add(action)
                 } label: {
-                    ActionTokenView(action: action, size: metrics.token)
+                    ActionTokenView(action: action, size: metrics.token, style: style)
                 }
                 .buttonStyle(TokenPressStyle())
                 // Running locks editing; the view model ignores the tap too.
                 .disabled(!vm.canEdit)
-                .accessibilityLabel("Add \(ActionTokenView.label(action).lowercased())")
+                .accessibilityLabel("Add \(ActionTokenView.label(action, style: style).lowercased())")
             }
         }
     }

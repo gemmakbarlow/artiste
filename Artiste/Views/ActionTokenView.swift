@@ -3,6 +3,7 @@ import SwiftUI
 struct ActionTokenView: View {
     let action: Action
     let size: CGFloat
+    var style: BoardStyle = .classic
 
     var body: some View {
         ZStack {
@@ -20,12 +21,12 @@ struct ActionTokenView: View {
                     .overlay(Circle().strokeBorder(Color(white: 0.82), lineWidth: 3))
                 Image(systemName: "drop.fill")
                     .font(.system(size: size * 0.5))
-                    .foregroundStyle(Theme.color(color))
+                    .foregroundStyle(style.color(color))
             }
         }
         .frame(width: size, height: size)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Self.label(action))
+        .accessibilityLabel(Self.label(action, style: style))
     }
 
     private static func symbol(_ d: Direction) -> String {
@@ -37,10 +38,10 @@ struct ActionTokenView: View {
         }
     }
 
-    static func label(_ action: Action) -> String {
+    static func label(_ action: Action, style: BoardStyle = .classic) -> String {
         switch action {
         case .move(let d): "Move \(d.rawValue)"
-        case .paint(let c): "Paint \(c.rawValue)"
+        case .paint(let c): "Paint \(style.name(c))"
         }
     }
 }

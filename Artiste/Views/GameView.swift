@@ -73,12 +73,12 @@ struct GameView: View {
                                 .padding(.bottom, metrics.spacing)
                         }
                     }
-                    TrayView(vm: vm, metrics: metrics)
+                    TrayView(vm: vm, metrics: metrics, style: .classic)
                 }
             }
             .padding(.horizontal, 16)
             .padding(.bottom, metrics.spacing * 2)
-            SlotRowView(vm: vm, metrics: metrics)
+            SlotRowView(vm: vm, metrics: metrics, style: .classic)
         }
     }
 
