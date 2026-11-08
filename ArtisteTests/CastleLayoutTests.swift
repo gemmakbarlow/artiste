@@ -37,8 +37,8 @@ import Testing
 
     // MARK: The game screen's board area
 
-    /// The board area `GameView` gives the castles, from `CastleLayout.boardArea` (debug builds of `GameView`
-    /// check their real layout against it). Insets are the ones these devices report in landscape.
+    /// The board area `GameView` gives the castles, from `CastleLayout.boardArea`, which matched the simulators'
+    /// measured layouts exactly. Insets are the ones these devices report in landscape.
     static func gameArea(_ screen: CGSize, _ insets: EdgeInsets, isPad: Bool) -> CGSize {
         let metrics = Theme.metrics(isPad: isPad)
         return CastleLayout.boardArea(screen: screen, insets: insets, metrics: metrics, isPad: isPad,

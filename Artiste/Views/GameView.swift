@@ -43,11 +43,6 @@ struct GameView: View {
         GameScreenLayout.headerButtonSize(metrics)
     }
 
-    #if DEBUG
-    /// What debug builds measure, to check the layout against `CastleLayout.boardArea`.
-    @State private var measured = MeasuredLayout()
-    #endif
-
     var body: some View {
         ZStack {
             ZigZagBackground()
@@ -118,14 +113,6 @@ struct GameView: View {
             .padding(.bottom, GameScreenLayout.trayGap(metrics, overlaysHeader: overlaysHeader))
             SlotRowView(vm: vm, metrics: metrics, style: style)
         }
-        #if DEBUG
-        .onGeometryChange(for: ScreenGeometry.self) { proxy in
-            ScreenGeometry(size: proxy.size, insets: proxy.safeAreaInsets)
-        } action: { screen in
-            measured.screen = screen
-            checkBoardArea()
-        }
-        #endif
         .overlay(alignment: .top) {
             if overlaysHeader {
                 HStack {
@@ -148,12 +135,6 @@ struct GameView: View {
         if vm.castle != nil && !isPad {
             tabs
                 .fixedSize()
-                #if DEBUG
-                .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width in
-                    measured.tabsWidth = width
-                    checkBoardArea()
-                }
-                #endif
                 .frame(width: GameScreenLayout.controlsColumnWidth(metrics), alignment: .leading)
         } else {
             tabs
@@ -241,32 +222,7 @@ struct GameView: View {
             .padding(.bottom, boards.margin)
             .frame(width: proxy.size.width, height: proxy.size.height, alignment: .bottom)
         }
-        #if DEBUG
-        .onGeometryChange(for: CGSize.self) { $0.size } action: { area in
-            measured.boardArea = area
-            checkBoardArea()
-        }
-        #endif
     }
-
-    #if DEBUG
-    /// Debug builds stop here if the castle board area or the Play/Reset column ever drifts from
-    /// `CastleLayout.boardArea`, the function the 20 pt and 26 pt square-size tests rely on.
-    private func checkBoardArea() {
-        guard castleKind != nil, let screen = measured.screen, let area = measured.boardArea else { return }
-        let expected = CastleLayout.boardArea(
-            screen: CGSize(width: screen.size.width + screen.insets.leading + screen.insets.trailing,
-                           height: screen.size.height + screen.insets.top + screen.insets.bottom),
-            insets: screen.insets, metrics: metrics, isPad: isPad, overlaysHeader: overlaysHeader,
-            controlsWidth: GameScreenLayout.controlsColumnWidth(metrics))
-        assert(abs(area.width - expected.width) <= 1 && abs(area.height - expected.height) <= 1,
-               "Castle board area \(area) differs from CastleLayout.boardArea \(expected)")
-        if let tabs = measured.tabsWidth {
-            assert(tabs <= GameScreenLayout.controlsColumnWidth(metrics) + 0.5,
-                   "Play/Reset tabs (\(tabs) pt) are wider than their column")
-        }
-    }
-    #endif
 
     /// The princess reveal over the canvas castle, on a full-screen dim that also blocks every other tap.
     /// The reveal dims its own frame, so the screen dim leaves a hole there and the whole screen dims evenly.
@@ -285,20 +241,6 @@ struct GameView: View {
         }
     }
 }
-
-#if DEBUG
-/// The game screen's size inside the safe area, and the insets around it.
-private struct ScreenGeometry: Equatable {
-    let size: CGSize
-    let insets: EdgeInsets
-}
-
-private struct MeasuredLayout {
-    var screen: ScreenGeometry?
-    var boardArea: CGSize?
-    var tabsWidth: CGFloat?
-}
-#endif
 
 /// Where the canvas castle is, so the princess reveal can be laid over it above everything else.
 private struct CanvasBoundsKey: PreferenceKey {

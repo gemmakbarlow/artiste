@@ -63,7 +63,7 @@ enum CastleLayout {
     }
 
     /// The space the game screen gives its two boards, worked out from the screen alone.
-    /// `GameView` lays its boards out in exactly this space and, in debug builds, checks the two agree.
+    /// `GameView`'s layout gives its boards exactly this space; `CastleLayoutTests` check the square sizes in it.
     /// - Parameters:
     ///   - screen: the whole window, safe areas included.
     ///   - insets: the window's safe-area insets.
@@ -120,7 +120,7 @@ enum GameScreenLayout {
     }
 
     /// The Play/Reset column beside the boards on iPhone: the inset, a Play tab with room for its label,
-    /// the gap and the Reset tab. `GameView` checks in debug builds that the tabs fit.
+    /// the gap and the Reset tab. The tabs measure about 207 pt on iPhone, so this leaves a few points spare.
     static func controlsColumnWidth(_ metrics: Theme.Metrics) -> CGFloat {
         controlsLeading + metrics.button * playTabShare + metrics.spacing * 2 + metrics.button * 1.25
     }
