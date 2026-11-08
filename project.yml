@@ -1,0 +1,45 @@
+name: Artiste
+options:
+  bundleIdPrefix: com.gemmakbarlow
+  deploymentTarget: { iOS: "26.0" }
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  Artiste:
+    type: application
+    platform: iOS
+    sources: [Artiste]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.gemmakbarlow.Artiste
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+    info:
+      path: Artiste/Info.plist
+      properties:
+        CFBundleDisplayName: Artiste
+        UILaunchScreen: { UIColorName: LaunchGreen, UIImageName: LaunchGlyph }
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        UIRequiresFullScreen: true
+        UTExportedTypeDeclarations:
+          - UTTypeIdentifier: com.gemmakbarlow.artiste.action-token
+            UTTypeDescription: Artiste action
+            UTTypeConformsTo: [public.data]
+  ArtisteTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [ArtisteTests]
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.gemmakbarlow.ArtisteTests
+    dependencies: [{ target: Artiste }]
+schemes:
+  Artiste:
+    build: { targets: { Artiste: all, ArtisteTests: [test] } }
+    test: { targets: [ArtisteTests] }
