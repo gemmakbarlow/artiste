@@ -8,8 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		21155A55E85B48910A26A7C5 /* ActionToken+UTType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B3DFA528FCAB7C56F1AB13 /* ActionToken+UTType.swift */; };
+		44A299314ED18CDE4DEE2638 /* ActionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8347A2DCD812444A3C5554 /* ActionTests.swift */; };
+		472FA463C68A514DC1384DFF /* GridTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ADE8F1A8466F87E78CC3D8D /* GridTests.swift */; };
+		7D6DBA7792D2263220649703 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0931528317A716CA3E7DC6D2 /* Grid.swift */; };
 		B1398BE8ECE4FFFAC1304A85 /* SmokeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBC49C7BBB1DEE96AB61AF9 /* SmokeTests.swift */; };
+		B47FEF6B12A0D0A9237CC824 /* PaintColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F21A992946CFA3FAB784D264 /* PaintColor.swift */; };
 		C1970B4BCD2CAE067BD6CD45 /* ArtisteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93BF102EF3394AA7A81CA480 /* ArtisteApp.swift */; };
+		C2EEE66082567977139880A7 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71DBE0A59C45A4110E77FF03 /* Action.swift */; };
 		F35E336EA9CCD75647F2CD82 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D684CFDFE9FC014287BCDFF /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -25,12 +30,17 @@
 
 /* Begin PBXFileReference section */
 		05B3DFA528FCAB7C56F1AB13 /* ActionToken+UTType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ActionToken+UTType.swift"; sourceTree = "<group>"; };
+		0931528317A716CA3E7DC6D2 /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
+		2ADE8F1A8466F87E78CC3D8D /* GridTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridTests.swift; sourceTree = "<group>"; };
+		3D8347A2DCD812444A3C5554 /* ActionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionTests.swift; sourceTree = "<group>"; };
 		6CBC49C7BBB1DEE96AB61AF9 /* SmokeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmokeTests.swift; sourceTree = "<group>"; };
 		6D684CFDFE9FC014287BCDFF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6F7AF3A7EB71ADD80DE924B9 /* Artiste.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Artiste.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		71DBE0A59C45A4110E77FF03 /* Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
 		7AEE3BBA6C888E78670D8602 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		92CD5EE166002065BCA90BB5 /* ArtisteTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ArtisteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		93BF102EF3394AA7A81CA480 /* ArtisteApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtisteApp.swift; sourceTree = "<group>"; };
+		F21A992946CFA3FAB784D264 /* PaintColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaintColor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -74,6 +84,8 @@
 		7D967A32DF1885B1375AEC86 /* ArtisteTests */ = {
 			isa = PBXGroup;
 			children = (
+				3D8347A2DCD812444A3C5554 /* ActionTests.swift */,
+				2ADE8F1A8466F87E78CC3D8D /* GridTests.swift */,
 				6CBC49C7BBB1DEE96AB61AF9 /* SmokeTests.swift */,
 			);
 			path = ArtisteTests;
@@ -82,7 +94,10 @@
 		D7DFEA61F02FB8399608A95B /* Engine */ = {
 			isa = PBXGroup;
 			children = (
+				71DBE0A59C45A4110E77FF03 /* Action.swift */,
 				05B3DFA528FCAB7C56F1AB13 /* ActionToken+UTType.swift */,
+				0931528317A716CA3E7DC6D2 /* Grid.swift */,
+				F21A992946CFA3FAB784D264 /* PaintColor.swift */,
 			);
 			path = Engine;
 			sourceTree = "<group>";
@@ -173,6 +188,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				44A299314ED18CDE4DEE2638 /* ActionTests.swift in Sources */,
+				472FA463C68A514DC1384DFF /* GridTests.swift in Sources */,
 				B1398BE8ECE4FFFAC1304A85 /* SmokeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -181,8 +198,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2EEE66082567977139880A7 /* Action.swift in Sources */,
 				21155A55E85B48910A26A7C5 /* ActionToken+UTType.swift in Sources */,
 				C1970B4BCD2CAE067BD6CD45 /* ArtisteApp.swift in Sources */,
+				7D6DBA7792D2263220649703 /* Grid.swift in Sources */,
+				B47FEF6B12A0D0A9237CC824 /* PaintColor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
