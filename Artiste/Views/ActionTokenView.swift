@@ -37,7 +37,7 @@ struct ActionTokenView: View {
         }
     }
 
-    private static func label(_ action: Action) -> String {
+    static func label(_ action: Action) -> String {
         switch action {
         case .move(let d): "Move \(d.rawValue)"
         case .paint(let c): "Paint \(c.rawValue)"
