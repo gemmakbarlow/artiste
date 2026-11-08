@@ -12,10 +12,10 @@ import Testing
         GameViewModel(levels: Self.levels, levelIndex: levelIndex, progress: progress, sound: sound, stepDelay: stepDelay)
     }
 
-    /// Places `actions` into consecutive slots starting at 0, or into `slots` if given.
-    func fill(_ vm: GameViewModel, _ actions: [Action], at slots: [Int]? = nil) {
-        for (i, action) in actions.enumerated() {
-            vm.place(action, at: slots?[i] ?? i)
+    /// Taps each of `actions` in the tray, filling slots from the left.
+    func fill(_ vm: GameViewModel, _ actions: [Action]) {
+        for action in actions {
+            vm.add(action)
         }
     }
 
@@ -76,13 +76,6 @@ import Testing
         await task.value
         #expect(vm.state == .succeeded)
         #expect(vm.activeSlot == nil)
-    }
-
-    @Test func gappedProgramSucceeds() async {
-        let vm = makeVM()
-        fill(vm, vm.level.solution, at: [0, 2, 4])
-        await vm.play()
-        #expect(vm.state == .succeeded)
     }
 
     @Test func wrongProgramFailsAndBlocksPlay() async {
@@ -150,8 +143,8 @@ import Testing
         fill(vm, [.move(.up)])
         await vm.play()
         #expect(vm.canEdit)
-        vm.place(.paint(.red), at: 3)
-        #expect(vm.slots[3] == .paint(.red))
+        vm.add(.paint(.red))
+        #expect(vm.slots[1] == .paint(.red))
         #expect(vm.state == .failed)
     }
 
@@ -161,19 +154,21 @@ import Testing
         await vm.play()
         #expect(vm.state == .succeeded)
         let succeededSlots = vm.slots
-        vm.place(.paint(.blue), at: 3)
-        vm.clear(slot: 0)
-        vm.move(from: 0, to: 2)
+        vm.add(.paint(.blue))
+        vm.remove(at: 0)
+        vm.removeLast()
         #expect(vm.slots == succeededSlots)
+        #expect(vm.canRemoveLast == false)
 
         let (slow, task) = await startSlowRun()
         #expect(slow.state == .running)
         #expect(slow.canEdit == false)
         let runningSlots = slow.slots
-        slow.place(.paint(.blue), at: 3)
-        slow.clear(slot: 0)
-        slow.move(from: 0, to: 2)
+        slow.add(.paint(.blue))
+        slow.remove(at: 0)
+        slow.removeLast()
         #expect(slow.slots == runningSlots)
+        #expect(slow.canRemoveLast == false)
 
         slow.cancelRun()
         await task.value
@@ -210,42 +205,58 @@ import Testing
         #expect(vm.marker == vm.level.start)
     }
 
-    @Test func placeReplacesAndMoveSwaps() {
+    @Test func addFillsNextEmptySlot() {
+        let vm = makeVM()
+        vm.add(.move(.right))
+        vm.add(.paint(.red))
+        #expect(vm.slots == [.move(.right), .paint(.red), nil, nil, nil])
+        #expect(vm.canPlay)
+        #expect(sound.played == [.place, .place])
+    }
+
+    @Test func addWhenFullShakesAndKeepsSlots() {
+        let vm = makeVM()
+        fill(vm, Array(repeating: .move(.right), count: 5))
+        #expect(vm.isFull)
+        #expect(vm.rejectedAddCount == 0)
+        vm.add(.paint(.blue))
+        #expect(vm.slots == Array(repeating: .move(.right), count: 5))
+        #expect(vm.rejectedAddCount == 1)
+        #expect(sound.played.last == .bump)
+    }
+
+    @Test func removeShiftsLaterActionsLeft() {
         let vm = makeVM()
         let a = Action.move(.right), b = Action.paint(.red), c = Action.move(.down)
-        vm.place(a, at: 0)
-        vm.place(b, at: 1)
-        vm.move(from: 0, to: 1)
-        #expect(vm.slots == [b, a, nil, nil, nil])
-        vm.place(c, at: 0)
-        #expect(vm.slots == [c, a, nil, nil, nil])
-        #expect(sound.played == [.place, .place, .place])
+        fill(vm, [a, b, c])
+        vm.remove(at: 1)
+        #expect(vm.slots == [a, c, nil, nil, nil])
+        #expect(sound.played.last == .trash)
+        vm.add(b)
+        #expect(vm.slots == [a, c, b, nil, nil])
     }
 
-    @Test func selfMoveIsNoOp() {
+    @Test func removeLastRemovesLastFilledSlot() {
         let vm = makeVM()
-        vm.place(.move(.right), at: 2)
-        vm.move(from: 2, to: 2)
-        #expect(vm.slots == [nil, nil, .move(.right), nil, nil])
-    }
-
-    @Test func clearEmptiesSlot() {
-        let vm = makeVM()
-        vm.place(.move(.right), at: 1)
-        #expect(vm.canPlay)
-        vm.clear(slot: 1)
+        #expect(vm.canRemoveLast == false)
+        fill(vm, [.move(.right), .paint(.red)])
+        #expect(vm.canRemoveLast)
+        vm.removeLast()
+        #expect(vm.slots == [.move(.right), nil, nil, nil, nil])
+        vm.removeLast()
         #expect(vm.slots.allSatisfy { $0 == nil })
         #expect(vm.canPlay == false)
-        #expect(sound.played.last == .trash)
+        #expect(vm.canRemoveLast == false)
+        #expect(sound.played == [.place, .place, .trash, .trash])
     }
 
-    @Test func outOfRangeEditsAreNoOps() {
+    @Test func removingNothingIsANoOp() {
         let vm = makeVM()
-        vm.place(.move(.right), at: 0)
-        vm.place(.move(.right), at: 5)
-        vm.place(.move(.right), at: -1)
-        vm.move(from: 0, to: 5)
-        vm.clear(slot: 9)
+        vm.removeLast()
+        vm.add(.move(.right))
+        vm.remove(at: 1)
+        vm.remove(at: 9)
+        vm.remove(at: -1)
         #expect(vm.slots == [.move(.right), nil, nil, nil, nil])
         #expect(sound.played == [.place])
     }

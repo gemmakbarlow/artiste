@@ -1,18 +1,33 @@
 import SwiftUI
 
-/// The orange panel along the bottom: the program slots, with the trash at the trailing end.
+/// The orange panel along the bottom: the program slots, with the Back button at the trailing end.
+/// Tapping a placed action removes it; the actions after it slide left.
 struct SlotRowView: View {
     let vm: GameViewModel
     let metrics: Theme.Metrics
 
     var body: some View {
         HStack(spacing: metrics.spacing) {
-            ForEach(vm.slots.indices, id: \.self) { index in
-                SlotView(vm: vm, index: index, size: metrics.token)
+            HStack(spacing: metrics.spacing) {
+                ForEach(vm.slots.indices, id: \.self) { index in
+                    SlotView(vm: vm, index: index, size: metrics.token)
+                }
             }
-            // Keeps 12 slots and the trash on one line in a 667 pt-wide landscape iPhone (SE).
+            // Shakes when an action is tapped while every slot is full.
+            .keyframeAnimator(initialValue: CGFloat(0), trigger: vm.rejectedAddCount) { content, offset in
+                content.offset(x: offset)
+            } keyframes: { _ in
+                KeyframeTrack {
+                    LinearKeyframe(-10, duration: 0.05)
+                    LinearKeyframe(10, duration: 0.08)
+                    LinearKeyframe(-6, duration: 0.08)
+                    LinearKeyframe(6, duration: 0.08)
+                    LinearKeyframe(0, duration: 0.06)
+                }
+            }
+            // Keeps 12 slots and the Back button on one line in a 667 pt-wide landscape iPhone (SE).
             Spacer(minLength: metrics.spacing)
-            TrashTargetView(vm: vm, size: metrics.token * 1.15)
+            BackButtonView(vm: vm, size: metrics.token * 1.15)
         }
         .animation(.spring(duration: 0.3), value: vm.slots)
         .padding(.horizontal, 16)
@@ -27,8 +42,6 @@ private struct SlotView: View {
     let index: Int
     let size: CGFloat
 
-    @State private var isTargeted = false
-
     var body: some View {
         let action = vm.slots[index]
         content(action)
@@ -41,52 +54,26 @@ private struct SlotView: View {
                         .shadow(color: .white, radius: 6)
                 }
             }
-            .overlay {
-                if isTargeted {
-                    Circle().strokeBorder(Theme.green, lineWidth: 4)
-                }
-            }
-            .scaleEffect(isTargeted ? 1.1 : 1)
-            .animation(.spring(duration: 0.2), value: isTargeted)
-            .contentShape(Circle())
-            .dropDestination(for: DragToken.self) { tokens, _ in
-                guard let token = tokens.first, vm.canEdit else { return false }
-                DropRouter.handle(token, onSlot: index, vm: vm)
-                return true
-            } isTargeted: { targeted in
-                isTargeted = targeted && vm.canEdit
-            }
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel("Slot \(index + 1), \(action.map { ActionTokenView.label($0).lowercased() } ?? "empty")")
-            .accessibilityActions {
-                if vm.canEdit {
-                    ForEach(vm.trayActions, id: \.self) { trayAction in
-                        Button("Set to \(ActionTokenView.label(trayAction))") {
-                            vm.place(trayAction, at: index)
-                        }
-                    }
-                    if action != nil {
-                        Button("Clear") {
-                            vm.clear(slot: index)
-                        }
-                    }
-                }
-            }
     }
 
     @ViewBuilder
     private func content(_ action: Action?) -> some View {
         if let action {
-            if vm.canEdit {
-                ActionTokenView(action: action, size: size)
-                    .draggable(DragToken(action: action, sourceSlot: index)) {
-                        ActionTokenView(action: action, size: size)
-                    }
-            } else {
+            Button {
+                vm.remove(at: index)
+            } label: {
                 ActionTokenView(action: action, size: size)
             }
+            .buttonStyle(TokenPressStyle())
+            .disabled(!vm.canEdit)
+            .transition(.scale.combined(with: .opacity))
+            .accessibilityLabel("Slot \(index + 1), \(ActionTokenView.label(action).lowercased())")
+            .accessibilityHint(vm.canEdit ? "Double-tap to remove." : "")
         } else {
-            Circle().fill(Theme.emptySlot)
+            Circle()
+                .fill(Theme.emptySlot)
+                .accessibilityElement()
+                .accessibilityLabel("Slot \(index + 1), empty")
         }
     }
 }

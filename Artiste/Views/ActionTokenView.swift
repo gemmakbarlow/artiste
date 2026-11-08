@@ -45,6 +45,15 @@ struct ActionTokenView: View {
     }
 }
 
+/// A chunky press: the token shrinks a little while a finger is on it.
+struct TokenPressStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.88 : 1)
+            .animation(.spring(duration: 0.15), value: configuration.isPressed)
+    }
+}
+
 #Preview {
     VStack(spacing: 16) {
         HStack { ForEach(Direction.allCases, id: \.self) { ActionTokenView(action: .move($0), size: 64) } }

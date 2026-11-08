@@ -5,14 +5,14 @@
 
 ## 1. Summary
 
-Artiste is a SwiftUI game for iPad and iPhone (landscape only) that teaches young children sequencing — the core idea behind programming. Each level shows a **target picture** on a 5×5 grid and a **canvas** grid that is partly painted. The child drags arrow and paint-drop actions into a row of slots, taps **Play**, and watches a marker walk the grid running each action in turn. If the canvas matches the target, fireworks and a **Next** button appear. If not, the marker stays where it stopped, and the child must tap **Reset** before trying again.
+Artiste is a SwiftUI game for iPad and iPhone (landscape only) that teaches young children sequencing — the core idea behind programming. Each level shows a **target picture** on a 5×5 grid and a **canvas** grid that is partly painted. The child taps arrow and paint-drop actions to add them to a row of slots, taps **Play**, and watches a marker walk the grid running each action in turn. If the canvas matches the target, fireworks and a **Next** button appear. If not, the marker stays where it stopped, and the child must tap **Reset** before trying again.
 
 Artiste should look and feel very similar to the game seen at the library: the same screen layout, color scheme and chunky round controls (see §6). All icons are SF Symbols, and the 15 levels are Artiste's own designs.
 
 ## 2. Goals and non-goals
 
 **Goals**
-- Big, bright, tappable/draggable elements that suit 4–7 year olds.
+- Big, bright, tappable elements that suit 4–7 year olds.
 - 15 hand-made 5×5 levels, with colors introduced gradually.
 - A simple loop: build → Play → watch → succeed or Reset.
 - Works fully offline, with no accounts, ads or network calls.
@@ -25,7 +25,7 @@ Artiste should look and feel very similar to the game seen at the library: the s
 
 ## 3. Platform and tech
 
-- Swift 6, SwiftUI. Deployment target is the **latest iOS/iPadOS** version that the current Xcode supports, with no back-deployment. This means modern APIs (`@Observable`, `Transferable`, `.draggable`/`.dropDestination`, the newest SF Symbols) can be used freely.
+- Swift 6, SwiftUI. Deployment target is the **latest iOS/iPadOS** version that the current Xcode supports, with no back-deployment. This means modern APIs (`@Observable`, the newest SF Symbols) can be used freely.
 - Icons: **SF Symbols only**, with no custom image assets apart from the app icon.
 - Universal app: iPad and iPhone, **landscape left/right only**.
 - No third-party dependencies.
@@ -59,7 +59,7 @@ The tray shows **only** the paint colors available in the current level. All fou
 ### 4.4 Program slots
 - The number of slots is the length of the level's **reference solution** (the shortest answer the level designer wrote) **plus 2**. The extra slots give the child some room for detours and mistakes.
 - Any program that produces the target counts as a success. It doesn't have to match the reference solution.
-- Empty slots are skipped. **Play is enabled as long as at least one slot is filled** (and the board is in the Ready state, see 4.6).
+- Slots always fill from the left with no gaps (see §5). **Play is enabled as long as at least one slot is filled** (and the board is in the Ready state, see 4.6).
 
 ### 4.5 Running
 - Actions run left to right, one step every ~0.6 s. The current slot is highlighted, the marker slides to its new cell, and paint "splats" in with a short scale animation.
@@ -80,18 +80,16 @@ Ready ──Play──▶ Running ──(match)──▶ Succeeded ──Next─
 - **Reset** (from Failed) puts the marker back at `start` and restores the canvas to the level's starting pattern. **The program in the slots is kept.**
 - **Succeeded:** a full-screen overlay with fireworks, a big "Good job!" message and a **Next** button (plus a small "back to levels" button). On the last level, Next goes back to level select with a bigger celebration.
 
-## 5. Interaction: drag-and-drop editing
+## 5. Interaction: tap to add
 
-Editing is drag-and-drop only. Nothing is placed by tapping.
+Editing uses single taps only. There is no dragging and no double-tap. (The first version used drag and drop, which was too hard for small hands when tested on an iPad on 2026-11-08.)
 
-- **Tray → slot:** drag an action from the tray onto any slot. If the slot is empty, the action goes in. If it's full, the new action **replaces** the old one.
-- **Slot → slot:** drag a placed action onto another slot to **move** it there. If the target slot is full, the two actions swap.
-- **Slot → trash:** a large trash-can drop target sits at the end of the slot row. Dropping a placed action on it clears that slot. The can "gulps" when it's hovered over and when something is dropped in.
-- A drop anywhere else is cancelled, and the action springs back.
-- Drop targets highlight (thicker outline and a slight scale-up) while an item hovers over them.
+- **Tap a tray action → add it.** The action flies into the **next empty slot**, so the row fills left to right in the order the actions will run. A "pop" sound plays.
+- **Row full:** tapping a tray action when every slot is filled does nothing except give the slot row a short shake and play the bump sound.
+- **Tap a placed action → remove it.** It disappears, and every action after it slides left to close the gap. The program never has holes.
+- **Back button (`delete.left.fill`):** a big round button at the right end of the slot panel, in place of the old trash can. It removes the **last** action. It's grayed out when the row is empty.
 - Tray items are never used up; the tray works like an endless supply.
-
-Implementation note: the drag payload is a small `Transferable` (`Codable`) value `DragToken { action: Action, sourceSlot: Int? }`. `sourceSlot == nil` means the drag came from the tray.
+- While Running or Succeeded, taps on the tray, the row and Back do nothing (see §4.6).
 
 ## 6. Screens and layout
 
@@ -135,7 +133,7 @@ The game screen should look very similar to the library game:
   - **Arrow tokens:** white SF Symbol arrows (`arrow.up`, `arrow.right`, `arrow.left`, `arrow.down`) on red circles with a white ring.
   - **Paint tokens:** a `drop.fill` in the paint color on a white circle with a light ring.
   - Tokens are at least 56 pt on iPad and 44 pt on iPhone.
-- **Slot panel:** a warm orange panel along the bottom. Empty slots are slightly darker orange circles, the same size as the tokens. Filled slots show the token. The trash target (`trash.fill` in a large circle) sits at the right end of the panel.
+- **Slot panel:** a warm orange panel along the bottom. Empty slots are slightly darker orange circles, the same size as the tokens. Filled slots show the token. The Back button (`delete.left.fill` in a large circle) sits at the right end of the panel.
 - **Slot limit:** at most 12 slots per level (reference solution ≤ 10, plus the 2 extra), so the row fits on one line on the smallest supported iPhone in landscape.
 
 ### 6.3 Success overlay
@@ -165,7 +163,7 @@ The design has three layers, each with one clear job.
 - `SoundPlayer`: plays short built-in iOS system sounds (place, paint, bump, trash, success) with `AudioServicesPlaySystemSound` and respects mute. No audio files are bundled; the sound IDs live in one place so they can be swapped later.
 
 ### 7.3 `Views/` — SwiftUI only, no game logic
-- `LevelSelectView`, `GameView`, `GridView` (shared by target and canvas, with an optional marker), `ActionTokenView`, `TrayView`, `SlotRowView`, `TrashTargetView`, `ControlButtonsView`, `SuccessOverlayView`, `FireworksView`.
+- `LevelSelectView`, `GameView`, `GridView` (shared by target and canvas, with an optional marker), `ActionTokenView`, `TrayView`, `SlotRowView`, `BackButtonView`, `ControlButtonsView`, `SuccessOverlayView`, `FireworksView`.
 
 ### 7.4 Level data
 `Artiste/Resources/levels.json`. Each level looks like this:
@@ -213,7 +211,7 @@ Patterns are original: checkerboards, stripes, diagonals, simple shapes (a heart
 **Engine unit tests (Swift Testing)**
 - Each action changes the position or grid correctly.
 - An off-grid move in each direction gives `.bumped`, and the run stops there.
-- Empty slots are skipped.
+- Empty slots are skipped by the interpreter (the view model keeps slots gap-free).
 - Painting over an existing color.
 - A different program that still reaches the target counts as success.
 
@@ -224,16 +222,16 @@ Patterns are original: checkerboards, stripes, diagonals, simple shapes (a heart
 
 **View model tests**
 - State changes: Ready → Running → Succeeded/Failed. Play is blocked in Failed until `reset()`. `reset()` restores the marker and canvas but keeps the slots.
-- Editing is blocked while Running. Place, replace, move/swap and clear-via-trash all behave as described.
+- Editing is blocked while Running. Add (next empty slot, shake when full), remove-and-shift, and Back (remove last) all behave as described.
 - Steps are timed with an injectable delay of 0 in tests.
 
 **Manual checks**
-- iPhone SE (3rd gen) landscape and an iPad, checking layout, the 12-slot fit, drag targets and fireworks performance.
+- iPhone SE (3rd gen) landscape and an iPad, checking layout, the 12-slot fit, tap targets and fireworks performance.
 
 ## 11. Accessibility
 
 - Every token, slot, cell and button has a VoiceOver label (for example "Paint red", "Slot 3, move right", "Row 2, column 4, blue").
-- Because editing is drag-only, slots also get accessibility actions ("Set to…", "Clear") so VoiceOver and Switch Control users can still play.
+- Tray actions are plain buttons ("Add move up"…), placed actions are buttons ("Slot 3, move right. Double-tap to remove."), and Back is labeled "Remove last action", so VoiceOver and Switch Control users can play the same way.
 - Colors always come with shape cues: paint drops have a distinct drop shape on a white circle, arrows have arrow shapes on red circles, and the start marker stands out by shape, not just color.
 
 ## 12. Suggested project structure
@@ -243,7 +241,7 @@ Artiste/
   Engine/   PaintColor.swift, Action.swift, Grid.swift, Level.swift, Interpreter.swift
   Game/     GameViewModel.swift, LevelStore.swift, ProgressStore.swift, SoundPlayer.swift
   Views/    LevelSelectView.swift, GameView.swift, GridView.swift, ActionTokenView.swift,
-            TrayView.swift, SlotRowView.swift, TrashTargetView.swift,
+            TrayView.swift, SlotRowView.swift, BackButtonView.swift,
             ControlButtonsView.swift, SuccessOverlayView.swift, FireworksView.swift
   Resources/ levels.json, Assets.xcassets (green AppIcon, LaunchGreen, AccentColor, paint colors)
 ArtisteTests/

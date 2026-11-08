@@ -24,6 +24,8 @@ enum BoardState: Sendable {
     private(set) var activeSlot: Int?
     /// Set on each off-grid bump; `count` keeps increasing so every bump can trigger the wobble animation.
     private(set) var bump: (direction: Direction, count: Int)?
+    /// Increases each time an action is tapped while the row is full; drives the row's shake.
+    private(set) var rejectedAddCount = 0
 
     init(levels: [Level], levelIndex: Int, progress: ProgressStore, sound: SoundPlaying, stepDelay: Duration = .milliseconds(600)) {
         precondition(levels.indices.contains(levelIndex), "Level index out of range")
@@ -46,22 +48,36 @@ enum BoardState: Sendable {
     var trayActions: [Action] { Action.trayActions(palette: level.palette) }
 
     // MARK: Editing
+    // Slots always fill from the left with no gaps: filled slots come first, then empty ones.
 
-    func place(_ action: Action, at slot: Int) {
-        guard canEdit, slots.indices.contains(slot) else { return }
-        slots[slot] = action
+    var isFull: Bool { !slots.contains(nil) }
+    var canRemoveLast: Bool { canEdit && slots.contains { $0 != nil } }
+
+    /// Tapping a tray action: it goes into the next empty slot. When the row is full, the
+    /// slots are unchanged and `rejectedAddCount` increases so the row can shake.
+    func add(_ action: Action) {
+        guard canEdit else { return }
+        guard let index = slots.firstIndex(of: nil) else {
+            rejectedAddCount += 1
+            sound.play(.bump)
+            return
+        }
+        slots[index] = action
         sound.play(.place)
     }
 
-    func move(from: Int, to: Int) {
-        guard canEdit, from != to, slots.indices.contains(from), slots.indices.contains(to) else { return }
-        slots.swapAt(from, to)
+    /// Tapping a placed action: it's removed and the actions after it slide left.
+    func remove(at index: Int) {
+        guard canEdit, slots.indices.contains(index), slots[index] != nil else { return }
+        slots.remove(at: index)
+        slots.append(nil)
+        sound.play(.trash)
     }
 
-    func clear(slot: Int) {
-        guard canEdit, slots.indices.contains(slot) else { return }
-        slots[slot] = nil
-        sound.play(.trash)
+    /// The Back button: removes the last action in the row.
+    func removeLast() {
+        guard let last = slots.lastIndex(where: { $0 != nil }) else { return }
+        remove(at: last)
     }
 
     // MARK: Running

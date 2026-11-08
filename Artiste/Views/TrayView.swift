@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// The cream bar holding an endless supply of action tokens to drag onto the slots.
+/// The cream bar holding an endless supply of actions. Tapping one adds it to the next empty slot.
 struct TrayView: View {
     let vm: GameViewModel
     let metrics: Theme.Metrics
@@ -22,15 +22,15 @@ struct TrayView: View {
     private func group(_ actions: [Action]) -> some View {
         HStack(spacing: metrics.spacing) {
             ForEach(actions, id: \.self) { action in
-                // Running locks editing, so the tray can't be dragged from then.
-                if vm.canEdit {
-                    ActionTokenView(action: action, size: metrics.token)
-                        .draggable(DragToken(action: action, sourceSlot: nil)) {
-                            ActionTokenView(action: action, size: metrics.token)
-                        }
-                } else {
+                Button {
+                    vm.add(action)
+                } label: {
                     ActionTokenView(action: action, size: metrics.token)
                 }
+                .buttonStyle(TokenPressStyle())
+                // Running locks editing; the view model ignores the tap too.
+                .disabled(!vm.canEdit)
+                .accessibilityLabel("Add \(ActionTokenView.label(action).lowercased())")
             }
         }
     }
