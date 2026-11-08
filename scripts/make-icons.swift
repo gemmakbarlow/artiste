@@ -39,22 +39,21 @@ func render(size: Int, opaque: Bool, to path: String, draw: (CGFloat) -> Void) {
     try! data.write(to: URL(fileURLWithPath: path))
 }
 
-func drawGlyph(in s: CGFloat) {
+/// Drop with the brush across its lower right. `outline` adds a green knockout
+/// copy under the brush (needed on the opaque icon only).
+func drawGlyph(in s: CGFloat, outline: Bool) {
     let drop = symbol("drop.fill", height: s * 0.70)
     drop.draw(in: NSRect(x: (s - drop.size.width) / 2, y: (s - drop.size.height) / 2,
                          width: drop.size.width, height: drop.size.height))
-}
-
-let root = "Artiste/Resources/Assets.xcassets"
-render(size: 1024, opaque: true, to: "\(root)/AppIcon.appiconset/AppIcon.png") { s in
-    drawGlyph(in: s)
-    // Overlay across the lower right; a green outline copy underneath keeps it
-    // readable where it crosses the white drop.
     let cx = s * 0.66, cy = s * 0.30
-    for img in [symbol("paintbrush.pointed.fill", height: s * 0.45 * 1.16, color: green),
-                symbol("paintbrush.pointed.fill", height: s * 0.45)] {
+    var brushes = [symbol("paintbrush.pointed.fill", height: s * 0.45)]
+    if outline { brushes.insert(symbol("paintbrush.pointed.fill", height: s * 0.45 * 1.16, color: green), at: 0) }
+    for img in brushes {
         img.draw(in: NSRect(x: cx - img.size.width / 2, y: cy - img.size.height / 2,
                             width: img.size.width, height: img.size.height))
     }
 }
-render(size: 400, opaque: false, to: "\(root)/LaunchGlyph.imageset/LaunchGlyph.png") { s in drawGlyph(in: s) }
+
+let root = "Artiste/Resources/Assets.xcassets"
+render(size: 1024, opaque: true, to: "\(root)/AppIcon.appiconset/AppIcon.png") { drawGlyph(in: $0, outline: true) }
+render(size: 400, opaque: false, to: "\(root)/LaunchGlyph.imageset/LaunchGlyph.png") { drawGlyph(in: $0, outline: false) }
