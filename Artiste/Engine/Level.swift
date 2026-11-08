@@ -8,6 +8,15 @@ struct Level: Identifiable, Decodable, Sendable {
 
     var slotCount: Int { solution.count + 2 }
 
+    init(id: Int, start: Position, initial: Grid, target: Grid, solution: [Action], palette: [PaintColor]) {
+        self.id = id
+        self.start = start
+        self.initial = initial
+        self.target = target
+        self.solution = solution
+        self.palette = palette
+    }
+
     private enum CodingKeys: String, CodingKey {
         case id, start, initial, target, solution, palette
     }
