@@ -97,7 +97,7 @@ Implementation note: the drag payload is a small `Transferable` (`Codable`) valu
 
 ### 6.0 Launch screen and app icon (green — Nina's favorite)
 - **Launch (splash) screen:** a solid, bright green background (the same green as the game's `PaintColor.green`). It uses the `UILaunchScreen` Info.plist keys: `UIColorName` points to a `LaunchGreen` color asset, and `UIImageName` points to a white paintbrush/drop glyph. The level select screen then fades in.
-- **App icon:** a green background with a white SF Symbol-style glyph (`paintbrush.pointed.fill` over a `drop.fill`), exported as a single 1024×1024 image in `Assets.xcassets/AppIcon`. The icon also provides dark and tinted variants, kept on green.
+- **App icon:** a green background with a white SF Symbol-style glyph (`paintbrush.pointed.fill` over a `drop.fill`), exported as a single 1024×1024 image in `Assets.xcassets/AppIcon`. Dark and tinted appearances use the system defaults.
 - Green is also the accent color (`AccentColor` asset) used for highlights such as drop-target outlines and the level-select checkmarks.
 
 ### 6.1 Level select (first screen after launch)
@@ -162,7 +162,7 @@ The design has three layers, each with one clear job.
   - The playback `Task` is cancelled if the view goes away.
 - `LevelStore`: loads `levels.json` from the bundle into `[Level]`.
 - `ProgressStore`: keeps the set of finished level IDs and the mute setting in `UserDefaults`.
-- `SoundPlayer`: plays a few short bundled sounds (place, paint, bump, success) with `AVAudioPlayer` and respects mute.
+- `SoundPlayer`: plays short built-in iOS system sounds (place, paint, bump, trash, success) with `AudioServicesPlaySystemSound` and respects mute. No audio files are bundled; the sound IDs live in one place so they can be swapped later.
 
 ### 7.3 `Views/` — SwiftUI only, no game logic
 - `LevelSelectView`, `GameView`, `GridView` (shared by target and canvas, with an optional marker), `ActionTokenView`, `TrayView`, `SlotRowView`, `TrashTargetView`, `ControlButtonsView`, `SuccessOverlayView`, `FireworksView`.
@@ -204,7 +204,7 @@ Patterns are original: checkerboards, stripes, diagonals, simple shapes (a heart
 ## 9. Error handling
 
 - Missing or invalid `levels.json` is a programmer error. Crash in Debug with a clear message, and the test suite checks the file (§10) so it can't ship broken.
-- Missing sound files are logged and ignored, so gameplay never breaks.
+- Sound playback is fire-and-forget; a sound that fails to play never affects gameplay.
 - Starting Play with zero filled slots can't happen because the button is disabled.
 - Backgrounding during a run: the run carries on when the app comes back. If the view goes away, the run is cancelled and the board goes back to Ready with a reset canvas.
 
@@ -245,7 +245,7 @@ Artiste/
   Views/    LevelSelectView.swift, GameView.swift, GridView.swift, ActionTokenView.swift,
             TrayView.swift, SlotRowView.swift, TrashTargetView.swift,
             ControlButtonsView.swift, SuccessOverlayView.swift, FireworksView.swift
-  Resources/ levels.json, Sounds/, Assets.xcassets (green AppIcon, LaunchGreen, AccentColor, paint colors)
+  Resources/ levels.json, Assets.xcassets (green AppIcon, LaunchGreen, AccentColor, paint colors)
 ArtisteTests/
   InterpreterTests.swift, LevelDataTests.swift, GameViewModelTests.swift
 ```
