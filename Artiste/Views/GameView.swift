@@ -112,11 +112,11 @@ struct GameView: View {
             let gap = max(24, proxy.size.width * 0.06)
             let side = max(0, min(proxy.size.height, (proxy.size.width - gap) / 2))
             HStack(spacing: gap) {
-                GridView(grid: vm.level.target)
+                BoardView(grid: vm.level.target)
                     .frame(width: side, height: side)
                     .accessibilityElement(children: .contain)
                     .accessibilityLabel("Target picture")
-                GridView(grid: vm.canvas, marker: vm.marker, bump: vm.bump)
+                BoardView(grid: vm.canvas, marker: vm.marker, bump: vm.bump)
                     .frame(width: side, height: side)
                     .accessibilityElement(children: .contain)
                     .accessibilityLabel("Your canvas")
