@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		21155A55E85B48910A26A7C5 /* ActionToken+UTType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B3DFA528FCAB7C56F1AB13 /* ActionToken+UTType.swift */; };
+		2CCB9004B4EA051866F6FC89 /* InterpreterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328D3A70EDB24785FA037E55 /* InterpreterTests.swift */; };
 		44A299314ED18CDE4DEE2638 /* ActionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8347A2DCD812444A3C5554 /* ActionTests.swift */; };
 		472FA463C68A514DC1384DFF /* GridTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ADE8F1A8466F87E78CC3D8D /* GridTests.swift */; };
 		7D6DBA7792D2263220649703 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0931528317A716CA3E7DC6D2 /* Grid.swift */; };
@@ -15,6 +16,7 @@
 		B47FEF6B12A0D0A9237CC824 /* PaintColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F21A992946CFA3FAB784D264 /* PaintColor.swift */; };
 		C1970B4BCD2CAE067BD6CD45 /* ArtisteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93BF102EF3394AA7A81CA480 /* ArtisteApp.swift */; };
 		C2EEE66082567977139880A7 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71DBE0A59C45A4110E77FF03 /* Action.swift */; };
+		C80040003C9A3B1A6AFD01DF /* Interpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4032FAD506EA8DEEBA3D01 /* Interpreter.swift */; };
 		F35E336EA9CCD75647F2CD82 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D684CFDFE9FC014287BCDFF /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -32,6 +34,8 @@
 		05B3DFA528FCAB7C56F1AB13 /* ActionToken+UTType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ActionToken+UTType.swift"; sourceTree = "<group>"; };
 		0931528317A716CA3E7DC6D2 /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
 		2ADE8F1A8466F87E78CC3D8D /* GridTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridTests.swift; sourceTree = "<group>"; };
+		328D3A70EDB24785FA037E55 /* InterpreterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpreterTests.swift; sourceTree = "<group>"; };
+		3B4032FAD506EA8DEEBA3D01 /* Interpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interpreter.swift; sourceTree = "<group>"; };
 		3D8347A2DCD812444A3C5554 /* ActionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionTests.swift; sourceTree = "<group>"; };
 		6CBC49C7BBB1DEE96AB61AF9 /* SmokeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmokeTests.swift; sourceTree = "<group>"; };
 		6D684CFDFE9FC014287BCDFF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -86,6 +90,7 @@
 			children = (
 				3D8347A2DCD812444A3C5554 /* ActionTests.swift */,
 				2ADE8F1A8466F87E78CC3D8D /* GridTests.swift */,
+				328D3A70EDB24785FA037E55 /* InterpreterTests.swift */,
 				6CBC49C7BBB1DEE96AB61AF9 /* SmokeTests.swift */,
 			);
 			path = ArtisteTests;
@@ -97,6 +102,7 @@
 				71DBE0A59C45A4110E77FF03 /* Action.swift */,
 				05B3DFA528FCAB7C56F1AB13 /* ActionToken+UTType.swift */,
 				0931528317A716CA3E7DC6D2 /* Grid.swift */,
+				3B4032FAD506EA8DEEBA3D01 /* Interpreter.swift */,
 				F21A992946CFA3FAB784D264 /* PaintColor.swift */,
 			);
 			path = Engine;
@@ -190,6 +196,7 @@
 			files = (
 				44A299314ED18CDE4DEE2638 /* ActionTests.swift in Sources */,
 				472FA463C68A514DC1384DFF /* GridTests.swift in Sources */,
+				2CCB9004B4EA051866F6FC89 /* InterpreterTests.swift in Sources */,
 				B1398BE8ECE4FFFAC1304A85 /* SmokeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -202,6 +209,7 @@
 				21155A55E85B48910A26A7C5 /* ActionToken+UTType.swift in Sources */,
 				C1970B4BCD2CAE067BD6CD45 /* ArtisteApp.swift in Sources */,
 				7D6DBA7792D2263220649703 /* Grid.swift in Sources */,
+				C80040003C9A3B1A6AFD01DF /* Interpreter.swift in Sources */,
 				B47FEF6B12A0D0A9237CC824 /* PaintColor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
