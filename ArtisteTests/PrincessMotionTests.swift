@@ -1,0 +1,117 @@
+import Foundation
+import Testing
+@testable import Artiste
+
+@Suite struct PrincessMotionTests {
+    /// Still between blinks and waves, moving inside them. Blinks start at 2.2, 4.9, 7.3 s;
+    /// the greeting runs 0.25–1.75 s and the first occasional wave 5.15–5.75 s.
+    @Test func restsBetweenBlinksAndWaves() {
+        #expect(!PrincessMotion.isMoving(at: 0.1, waves: true))
+        #expect(PrincessMotion.isMoving(at: 1.0, waves: true))
+        #expect(!PrincessMotion.isMoving(at: 2.0, waves: true))
+        #expect(PrincessMotion.isMoving(at: 2.25, waves: true))
+        #expect(!PrincessMotion.isMoving(at: 3.0, waves: true))
+        #expect(PrincessMotion.isMoving(at: 4.95, waves: true))
+        #expect(PrincessMotion.isMoving(at: 5.4, waves: true))
+        #expect(!PrincessMotion.isMoving(at: 6.0, waves: true))
+
+        // Without waving (idle, face only, Reduce Motion) only the blinks move.
+        #expect(!PrincessMotion.isMoving(at: 1.0, waves: false))
+        #expect(PrincessMotion.isMoving(at: 4.95, waves: false))
+        #expect(!PrincessMotion.isMoving(at: 5.4, waves: false))
+    }
+
+    /// Outside the motion windows the figure never changes; inside, the arm or eyes are off their rest.
+    @Test(arguments: [true, false])
+    func figureIsStillExactlyWhenAtRest(waves: Bool) {
+        for step in 0...6000 {
+            let time = Double(step) / 100
+            let arm = waves ? PrincessMotion.armAngle(at: time) : 0
+            let eyes = PrincessMotion.eyeOpenness(at: time)
+            if !PrincessMotion.isMoving(at: time, waves: waves) {
+                #expect(abs(arm) < 1e-9 && abs(eyes - 1) < 1e-9, "moved at rest, t = \(time)")
+            }
+        }
+        // And the converse: mid-blink her eyes are shut, mid-wave her arm is off its rest.
+        for blinkMiddle in [2.26, 4.96, 7.36] {
+            #expect(PrincessMotion.isMoving(at: blinkMiddle, waves: waves))
+            #expect(PrincessMotion.eyeOpenness(at: blinkMiddle) < 1)
+        }
+        if waves {
+            for waveMoment in [0.375, 5.3, 9.3] {
+                #expect(PrincessMotion.isMoving(at: waveMoment, waves: true))
+                #expect(abs(PrincessMotion.armAngle(at: waveMoment)) > 1)
+            }
+        }
+    }
+
+    /// At rest the timeline sleeps until the next blink or wave; while moving it ticks at frame rate,
+    /// landing exactly on the end of the window so she comes to rest.
+    @Test func nextUpdateSleepsAtRestAndTicksWhileMoving() {
+        #expect(abs(PrincessMotion.nextUpdate(after: 2.0, waves: false) - 2.2) < 1e-9)
+        #expect(abs(PrincessMotion.nextUpdate(after: 0.0, waves: true) - 0.25) < 1e-9)
+        #expect(abs(PrincessMotion.nextUpdate(after: 2.31, waves: false) - 2.32) < 1e-9)
+        let tick = PrincessMotion.nextUpdate(after: 1.0, waves: true) - 1.0
+        #expect(tick > 0 && tick <= PrincessMotion.frameInterval + 1e-9)
+        #expect(abs(PrincessMotion.nextUpdate(after: 3.0, waves: true) - 4.9) < 1e-9)
+        #expect(abs(PrincessMotion.nextUpdate(after: 5.01, waves: false) - 5.02) < 1e-9)
+        #expect(abs(PrincessMotion.nextUpdate(after: 5.03, waves: true) - 5.15) < 1e-9)
+    }
+
+    /// The face-only schedule goes straight from appearing to the first blink, ticks through it, then sleeps.
+    @Test func scheduleSkipsTheStillStretches() {
+        let start = Date(timeIntervalSinceReferenceDate: 0)
+        let dates = Array(PrincessSchedule(start: start, waves: false)
+            .entries(from: start, mode: .normal).prefix(12))
+            .map { $0.timeIntervalSince(start) }
+        #expect(dates.first == 0)
+        #expect(abs(dates[1] - 2.2) < 1e-9)
+        let blinkTicks = dates.filter { $0 > 2.2 && $0 < 2.33 }
+        #expect(blinkTicks.count == 8)
+        #expect(abs(dates[10] - 4.9) < 1e-9)
+        #expect(!dates.contains { $0 > 2.33 && $0 < 4.9 - 1e-9 })
+    }
+
+    /// The picker's six faces start at different phases, so no two first blinks coincide and each comes after she appears.
+    @Test func pickerFacesBlinkAtDifferentTimes() {
+        let firsts = CastleKind.allCases.map { PrincessMotion.firstBlink(phaseOffset: PrincessMotion.phaseOffset(for: $0)) }
+        #expect(Set(firsts).count == CastleKind.allCases.count)
+        #expect(firsts.allSatisfy { $0 > 0 })
+        #expect(PrincessMotion.phaseOffset(for: .desert) == 0)
+    }
+
+    /// With a real start date (`Date.now` is about 8e8 s after the reference date, where a `Date` only resolves
+    /// to about 1e-7 s), the schedule must still always move forward, never sleep longer than the longest
+    /// still stretch, and tick at frame rate inside every blink and wave.
+    @Test(arguments: [
+        (8e8 + 0.123456, 0.0, true),
+        (8e8 + 0.123456, 0.0, false),
+        (8.123e8 + 0.987654321, 10.0001, true),
+        (8.123e8 + 0.987654321, 3.33333, false),
+    ])
+    func scheduleAlwaysAdvancesWithARealStartDate(startSeconds: Double, fromOffset: Double, waves: Bool) {
+        let start = Date(timeIntervalSinceReferenceDate: startSeconds)
+        let iterator = PrincessSchedule(start: start, waves: waves)
+            .entries(from: start.addingTimeInterval(fromOffset), mode: .normal)
+        var times: [Double] = []
+        while times.count < 2000 || times.last! - times.first! < 60 {
+            guard let date = iterator.next(), times.count < 100_000 else { break }
+            times.append(date.timeIntervalSince(start))
+        }
+        #expect(times.count >= 2000)
+        #expect(times.last! - times.first! >= 60)
+        let longestRest = PrincessMotion.blinkGaps.max()! - PrincessMotion.blinkLength
+        var stuck = 0, tooLong = 0, slowWhileMoving = 0
+        for (time, next) in zip(times, times.dropFirst()) {
+            let gap = next - time
+            if gap <= 0 { stuck += 1 }
+            if gap > longestRest + 1e-4 { tooLong += 1 }
+            if PrincessMotion.isMoving(at: time, waves: waves), gap > PrincessMotion.frameInterval + 1e-4 {
+                slowWhileMoving += 1
+            }
+        }
+        #expect(stuck == 0)
+        #expect(tooLong == 0)
+        #expect(slowWhileMoving == 0)
+    }
+}
