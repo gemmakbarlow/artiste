@@ -109,7 +109,7 @@ struct Castle: Sendable, Hashable, Identifiable {
         roofs: [Roof(columns: 2...4, row: 0, height: 2.4, style: .spire, flag: true)],
         battlementColumns: [0, 6], battlementRow: 5)
 
-    // Bayou palace: low, wide, two stories with a balcony row and a water line. 40 squares.
+    // Bayou palace: low, wide, two stories with a balcony row. 40 squares.
     private static let bayou = Layout(
         shape: [".#.##.#.", ".######.", ".######.",
                 "########", "########", "########"],
@@ -122,7 +122,7 @@ struct Castle: Sendable, Hashable, Identifiable {
         ],
         battlementColumns: [0, 7], battlementRow: 3)
 
-    // Island fort: a squat fort on a hill, a thatched tower, waves along the bottom. 44 squares.
+    // Island fort: a squat fort on a hill, a thatched tower. 44 squares.
     private static let island = Layout(
         shape: ["...##...", "...##...", "..####..", ".######.",
                 ".######.", "########", "########", "########"],

@@ -32,6 +32,16 @@ import Testing
         #expect(!PaintColor.allCases.contains { BoardStyle.classic.isPale($0) })
     }
 
+    /// The outline of a pale tray drop (the style's darkest color) stands clear of the white token.
+    @Test(arguments: CastleKind.allCases)
+    func paleDropOutlineContrastsWithWhite(kind: CastleKind) {
+        let style = BoardStyle.castle(kind)
+        for slot in PaintColor.allCases where style.isPale(slot) {
+            let ratio = 1.05 / (Self.luminance(style.hex(style.paleOutlineSlot)) + 0.05)
+            #expect(ratio >= 3, "\(kind) \(slot) outline contrast \(ratio)")
+        }
+    }
+
     /// WCAG relative luminance of a 0xRRGGBB value.
     private static func luminance(_ hex: UInt32) -> Double {
         func channel(_ shift: UInt32) -> Double {

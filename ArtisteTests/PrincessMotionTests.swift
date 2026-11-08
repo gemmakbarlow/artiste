@@ -72,6 +72,14 @@ import Testing
         #expect(!dates.contains { $0 > 2.33 && $0 < 4.9 - 1e-9 })
     }
 
+    /// The picker's six faces start at different phases, so no two first blinks coincide and each comes after she appears.
+    @Test func pickerFacesBlinkAtDifferentTimes() {
+        let firsts = CastleKind.allCases.map { PrincessMotion.firstBlink(phaseOffset: PrincessMotion.phaseOffset(for: $0)) }
+        #expect(Set(firsts).count == CastleKind.allCases.count)
+        #expect(firsts.allSatisfy { $0 > 0 })
+        #expect(PrincessMotion.phaseOffset(for: .desert) == 0)
+    }
+
     /// With a real start date (`Date.now` is about 8e8 s after the reference date, where a `Date` only resolves
     /// to about 1e-7 s), the schedule must still always move forward, never sleep longer than the longest
     /// still stretch, and tick at frame rate inside every blink and wave.

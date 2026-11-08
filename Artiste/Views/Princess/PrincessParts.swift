@@ -194,6 +194,17 @@ enum PrincessMotion {
     /// Gaps between blinks: 2 to 3 s, in a fixed order so it never looks mechanical.
     static let blinkGaps = [2.2, 2.7, 2.4, 2.9, 2.1, 2.6]
 
+    /// How far into her blink cycle a face on the castle picker starts, so six faces do not blink together:
+    /// 0.37 s per castle, at most 1.85 s, which stays inside the first gap before a blink.
+    static let phaseStep = 0.37
+
+    static func phaseOffset(for kind: CastleKind) -> Double {
+        Double(CastleKind.allCases.firstIndex(of: kind) ?? 0) * phaseStep
+    }
+
+    /// Seconds after she appears until her first blink starts, given her phase offset.
+    static func firstBlink(phaseOffset: Double) -> Double { blinkGaps[0] - phaseOffset }
+
     static var greetingEnd: Double { greetingStart + greetingLength }
 
     /// The arm's turn from its resting lean, in degrees.

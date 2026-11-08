@@ -120,7 +120,7 @@ struct GameView: View {
                     Spacer()
                     soundButton
                 }
-                .padding(.horizontal, 16)
+                .padding(.horizontal, GameScreenLayout.sidePadding)
                 .padding(.top, metrics.spacing)
             }
         }

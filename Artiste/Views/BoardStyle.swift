@@ -15,11 +15,20 @@ struct BoardStyle: Sendable, Equatable {
     func name(_ slot: PaintColor) -> String { names[slot] ?? slot.rawValue }
 
     /// Paints too pale to show against white, such as snow white or lavender.
-    /// Their tiles draw the motif in the grout color, and their tray drops get a grout-colored outline.
+    /// Their tiles draw the motif in the grout color, and their tray drops get an outline in the darkest color.
     func isPale(_ slot: PaintColor) -> Bool {
-        let hex = hex(slot)
+        Self.lightness(hex(slot)) / 255 > 0.9
+    }
+
+    /// The darkest of the style's colors, for outlining a pale drop on a white token.
+    /// (Slot 3 is dark on Ice but gold or sand on other castles, so the darkest slot is chosen instead.)
+    var paleOutlineSlot: PaintColor {
+        PaintColor.allCases.min { Self.lightness(hex($0)) < Self.lightness(hex($1)) } ?? .red
+    }
+
+    private static func lightness(_ hex: UInt32) -> Double {
         let r = Double((hex >> 16) & 0xFF), g = Double((hex >> 8) & 0xFF), b = Double(hex & 0xFF)
-        return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.9
+        return 0.299 * r + 0.587 * g + 0.114 * b
     }
 
     static let classic = BoardStyle(

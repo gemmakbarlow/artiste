@@ -97,7 +97,7 @@ struct CastlePickerView: View {
         } label: {
             VStack(spacing: 4) {
                 HStack(alignment: .center, spacing: gap) {
-                    PrincessView(kind: castle.kind, faceOnly: true)
+                    PrincessView(kind: castle.kind, faceOnly: true, phaseOffset: PrincessMotion.phaseOffset(for: castle.kind))
                         .padding(face * 0.06)
                         .frame(width: face, height: face)
                         .background(Circle().fill(tint.opacity(0.3)))

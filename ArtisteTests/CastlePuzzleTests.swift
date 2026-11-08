@@ -93,4 +93,17 @@ import Testing
         #expect(fifteen.trayColors == 4)
         #expect(fifteen.turnsAllowed)
     }
+
+    /// Pins the exact generated puzzles, so a change across launches or versions shows up here.
+    @Test func goldenPuzzlesStayFixed() {
+        let (_, rose) = Self.puzzle(.rose, 1)
+        #expect(rose.solution.map(\.token) == ["right", "paint:red"])
+        #expect(rose.initial.rows == ["...GY...", "...YG...", "R..GY..R", "B..YG..B",
+                                      "RBRBRBRR", "BRBRBRBB", "RBRBRBRR", "B.BRBRBB"])
+        let (_, island) = Self.puzzle(.island, 13)
+        #expect(island.solution.map(\.token) == ["paint:blue", "right", "paint:red", "up", "paint:blue",
+                                                  "right", "down", "right", "paint:red"])
+        #expect(island.initial.rows == ["...GY...", "...YG...", "..BRBR..", ".GYGYGY.",
+                                        ".BRBRBR.", "BGYGYGYB", "R.RBRBRB", "..B.BRBR"])
+    }
 }

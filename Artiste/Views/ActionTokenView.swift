@@ -23,11 +23,11 @@ struct ActionTokenView: View {
                     .font(.system(size: size * 0.5))
                     .foregroundStyle(style.color(color))
                     .overlay {
-                        // A pale drop would vanish on the white token, so it gets an outline.
+                        // A pale drop would vanish on the white token, so it gets an outline in the style's darkest color.
                         if style.isPale(color) {
                             Image(systemName: "drop")
                                 .font(.system(size: size * 0.5))
-                                .foregroundStyle(style.grout)
+                                .foregroundStyle(style.color(style.paleOutlineSlot))
                         }
                     }
             }

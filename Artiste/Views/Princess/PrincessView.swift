@@ -10,14 +10,18 @@ struct PrincessView: View {
     let kind: CastleKind
     var pose: Pose = .idle
     var faceOnly = false
+    /// Seconds her clock starts ahead, so a row of faces blinks at different moments.
+    var phaseOffset = 0.0
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var appeared = Date.now
+    @State private var appeared: Date
 
-    init(kind: CastleKind, pose: Pose = .idle, faceOnly: Bool = false) {
+    init(kind: CastleKind, pose: Pose = .idle, faceOnly: Bool = false, phaseOffset: Double = 0) {
         self.kind = kind
         self.pose = pose
         self.faceOnly = faceOnly
+        self.phaseOffset = phaseOffset
+        _appeared = State(initialValue: Date.now.addingTimeInterval(-phaseOffset))
     }
 
     var body: some View {
