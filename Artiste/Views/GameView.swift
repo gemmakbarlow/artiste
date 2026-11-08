@@ -141,3 +141,17 @@ struct GameView: View {
     .environment(progress)
     .environment(\.levels, LevelStore.loadBundled())
 }
+
+/// The smallest supported phone: iPhone SE (3rd gen) in landscape is 667×375 pt with no safe-area insets.
+/// Level 15 has 12 slots, the most any level has.
+#Preview("iPhone SE, 12 slots", traits: .fixedLayout(width: 667, height: 375)) {
+    @Previewable @State var progress = ProgressStore(defaults: UserDefaults(suiteName: "preview")!)
+    NavigationStack {
+        GameView(levelIndex: 14)
+            .toolbar(.hidden, for: .navigationBar)
+    }
+    .environment(progress)
+    .environment(\.levels, LevelStore.loadBundled())
+    .environment(\.horizontalSizeClass, .compact)
+    .environment(\.verticalSizeClass, .compact)
+}

@@ -10,7 +10,8 @@ struct SlotRowView: View {
             ForEach(vm.slots.indices, id: \.self) { index in
                 SlotView(vm: vm, index: index, size: metrics.token)
             }
-            Spacer(minLength: metrics.spacing * 2)
+            // Keeps 12 slots and the trash on one line in a 667 pt-wide landscape iPhone (SE).
+            Spacer(minLength: metrics.spacing)
             TrashTargetView(vm: vm, size: metrics.token * 1.15)
         }
         .animation(.spring(duration: 0.3), value: vm.slots)
