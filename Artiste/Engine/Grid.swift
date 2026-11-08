@@ -18,7 +18,7 @@ enum GridError: Error, Equatable {
     case badCharacter(Character)
 }
 
-struct Grid: Equatable, Sendable {
+struct Grid: Hashable, Sendable {
     static let size = 5
 
     let shape: BoardShape

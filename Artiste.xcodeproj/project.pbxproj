@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		207E1F5C44B13C4A46694A92 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F60EA7F80F62A70AFCD9E /* Theme.swift */; };
 		2965F2A920F247504893AF05 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EC1E6AE56E2139F110DB375 /* AppEnvironment.swift */; };
+		2A198BE2FFC1C40FB492ABDF /* CastleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 867E446DD522AAA521DC4392 /* CastleTests.swift */; };
 		2CCB9004B4EA051866F6FC89 /* InterpreterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328D3A70EDB24785FA037E55 /* InterpreterTests.swift */; };
 		388799AB3B8659DCA0F77F54 /* BoardShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D4BB877804C05E2B965329 /* BoardShape.swift */; };
 		39AECEC26882E240270DDD92 /* ProgressStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39ED531C944B32D6AC432E45 /* ProgressStoreTests.swift */; };
@@ -28,6 +29,7 @@
 		A83BD83AA306E64CC02D2500 /* levels.json in Resources */ = {isa = PBXBuildFile; fileRef = DBA2125836FB8AE591F73B84 /* levels.json */; };
 		B1398BE8ECE4FFFAC1304A85 /* SmokeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBC49C7BBB1DEE96AB61AF9 /* SmokeTests.swift */; };
 		B47FEF6B12A0D0A9237CC824 /* PaintColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F21A992946CFA3FAB784D264 /* PaintColor.swift */; };
+		B52157F46DF79D7DE24C71A7 /* Castle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 374BF4DF3143D66237AA8225 /* Castle.swift */; };
 		B7E93D1155CE6C95261765AC /* TrayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7623EB469F5E7EC3A2084E00 /* TrayView.swift */; };
 		C099038BBE44D2F46B9F19BC /* SoundPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12E67F077EDA7D9B5C525AA3 /* SoundPlayer.swift */; };
 		C1970B4BCD2CAE067BD6CD45 /* ArtisteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93BF102EF3394AA7A81CA480 /* ArtisteApp.swift */; };
@@ -63,6 +65,7 @@
 		20A8FBB10F111B5D311E770E /* ProgressStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressStore.swift; sourceTree = "<group>"; };
 		2ADE8F1A8466F87E78CC3D8D /* GridTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridTests.swift; sourceTree = "<group>"; };
 		328D3A70EDB24785FA037E55 /* InterpreterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpreterTests.swift; sourceTree = "<group>"; };
+		374BF4DF3143D66237AA8225 /* Castle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Castle.swift; sourceTree = "<group>"; };
 		39ED531C944B32D6AC432E45 /* ProgressStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressStoreTests.swift; sourceTree = "<group>"; };
 		3A282376DE9CFF4742E75EE5 /* BackButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButtonView.swift; sourceTree = "<group>"; };
 		3B4032FAD506EA8DEEBA3D01 /* Interpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interpreter.swift; sourceTree = "<group>"; };
@@ -77,6 +80,7 @@
 		7AEE3BBA6C888E78670D8602 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		7E3F60EA7F80F62A70AFCD9E /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		7EC1E6AE56E2139F110DB375 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
+		867E446DD522AAA521DC4392 /* CastleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CastleTests.swift; sourceTree = "<group>"; };
 		92CD5EE166002065BCA90BB5 /* ArtisteTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ArtisteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		93BF102EF3394AA7A81CA480 /* ArtisteApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtisteApp.swift; sourceTree = "<group>"; };
 		9856D0CEF5B56867A998E22C /* LevelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelStore.swift; sourceTree = "<group>"; };
@@ -162,6 +166,7 @@
 			children = (
 				3D8347A2DCD812444A3C5554 /* ActionTests.swift */,
 				6BD4B8C2141ADDE569CCDBC4 /* BoardShapeTests.swift */,
+				867E446DD522AAA521DC4392 /* CastleTests.swift */,
 				CBE01E6F9AC41AC58CAA5090 /* GameViewModelTests.swift */,
 				2ADE8F1A8466F87E78CC3D8D /* GridTests.swift */,
 				328D3A70EDB24785FA037E55 /* InterpreterTests.swift */,
@@ -177,6 +182,7 @@
 			children = (
 				71DBE0A59C45A4110E77FF03 /* Action.swift */,
 				09D4BB877804C05E2B965329 /* BoardShape.swift */,
+				374BF4DF3143D66237AA8225 /* Castle.swift */,
 				0931528317A716CA3E7DC6D2 /* Grid.swift */,
 				3B4032FAD506EA8DEEBA3D01 /* Interpreter.swift */,
 				474ADC1C3C9BCCDBF9ECCC46 /* Level.swift */,
@@ -285,6 +291,7 @@
 			files = (
 				44A299314ED18CDE4DEE2638 /* ActionTests.swift in Sources */,
 				3DE7293F507D5CE86E8DCA18 /* BoardShapeTests.swift in Sources */,
+				2A198BE2FFC1C40FB492ABDF /* CastleTests.swift in Sources */,
 				F683270B4AA4718179EA5E0E /* GameViewModelTests.swift in Sources */,
 				472FA463C68A514DC1384DFF /* GridTests.swift in Sources */,
 				2CCB9004B4EA051866F6FC89 /* InterpreterTests.swift in Sources */,
@@ -304,6 +311,7 @@
 				C1970B4BCD2CAE067BD6CD45 /* ArtisteApp.swift in Sources */,
 				F0C638EBFDCB43E328DD86F7 /* BackButtonView.swift in Sources */,
 				388799AB3B8659DCA0F77F54 /* BoardShape.swift in Sources */,
+				B52157F46DF79D7DE24C71A7 /* Castle.swift in Sources */,
 				FB66C0469011AC0B1E0D16D2 /* ControlButtonsView.swift in Sources */,
 				F6E8CF90235E1C3DD4B3D98F /* FireworksView.swift in Sources */,
 				9F3B26149820845BF914D6B5 /* GameView.swift in Sources */,

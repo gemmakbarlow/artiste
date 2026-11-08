@@ -1,3 +1,4 @@
+/// The four paint slots, 1 to 4 in declaration order. Each castle names them differently.
 enum PaintColor: String, CaseIterable, Codable, Hashable, Sendable {
     case red, blue, green, yellow
 
