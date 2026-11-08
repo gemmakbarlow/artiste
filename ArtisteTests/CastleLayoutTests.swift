@@ -1,4 +1,4 @@
-import CoreGraphics
+import SwiftUI
 import Testing
 @testable import Artiste
 
@@ -37,15 +37,42 @@ import Testing
 
     // MARK: The game screen's board area
 
-    /// The board areas `GameView` gives the castles in Castle Mode, measured in the simulator by logging the
-    /// size `castleBoards` passes to `CastleLayout.gameBoards`.
-    /// iPhone SE (3rd generation), 667 × 375 pt: the smallest supported phone.
-    static let seGameArea = CGSize(width: 359.9, height: 248.4)
-    /// iPhone 17e, 844 × 390 pt with landscape safe-area insets.
-    static let iPhone17eGameArea = CGSize(width: 442.733, height: 243.4)
-    /// iPad mini (A17 Pro), 1133 × 744 pt: the smallest supported iPad.
-    static let iPadMiniGameArea = CGSize(width: 1101, height: 356.2)
+    /// The board area `GameView` gives the castles, from `CastleLayout.boardArea` (debug builds of `GameView`
+    /// check their real layout against it). Insets are the ones these devices report in landscape.
+    static func gameArea(_ screen: CGSize, _ insets: EdgeInsets, isPad: Bool) -> CGSize {
+        let metrics = Theme.metrics(isPad: isPad)
+        return CastleLayout.boardArea(screen: screen, insets: insets, metrics: metrics, isPad: isPad,
+                                      overlaysHeader: !isPad,
+                                      controlsWidth: GameScreenLayout.controlsColumnWidth(metrics))
+    }
+
+    /// iPhone SE (3rd generation): the smallest supported phone, with no insets.
+    static let seGameArea = gameArea(CGSize(width: 667, height: 375), EdgeInsets(), isPad: false)
+    /// iPhone 17e: a notch on each side and the home indicator below.
+    static let iPhone17eGameArea = gameArea(CGSize(width: 844, height: 390),
+                                            EdgeInsets(top: 0, leading: 47, bottom: 20, trailing: 47), isPad: false)
+    /// iPad mini (A17 Pro): the smallest supported iPad, in an iPadOS 26 window with its title bar.
+    static let iPadMiniGameArea = gameArea(CGSize(width: 1133, height: 744),
+                                           EdgeInsets(top: 32, leading: 0, bottom: 25, trailing: 0), isPad: true)
     static let gameAreas = [seGameArea, iPhone17eGameArea, iPadMiniGameArea]
+
+    /// The same numbers the simulators measured, so a change to the formula can't quietly move them.
+    @Test func boardAreasMatchTheMeasuredLayouts() {
+        #expect(abs(Self.seGameArea.width - 354.4) < 0.5 && abs(Self.seGameArea.height - 248.4) < 0.5)
+        #expect(abs(Self.iPhone17eGameArea.width - 437.4) < 0.5 && abs(Self.iPhone17eGameArea.height - 243.4) < 0.5)
+        #expect(abs(Self.iPadMiniGameArea.width - 1101) < 0.5 && abs(Self.iPadMiniGameArea.height - 356.2) < 0.5)
+    }
+
+    @Test func overlaidHeaderTradesItsRowForTheSoundColumn() {
+        let metrics = Theme.metrics(isPad: false)
+        let castle = CastleLayout.boardArea(screen: CGSize(width: 667, height: 375), insets: EdgeInsets(), metrics: metrics,
+                                            isPad: false, overlaysHeader: true, controlsWidth: 200)
+        let classic = CastleLayout.boardArea(screen: CGSize(width: 667, height: 375), insets: EdgeInsets(), metrics: metrics,
+                                             isPad: false, overlaysHeader: false, controlsWidth: 200)
+        // The overlaid header gives back its row (button plus two gaps) and half the tray gap, and takes the Sound column.
+        #expect(abs(castle.height - classic.height - (44 + 2 * metrics.spacing + metrics.spacing)) < 0.001)
+        #expect(abs(classic.width - castle.width - (44 + GameScreenLayout.cornerClearance)) < 0.001)
+    }
 
     @Test func gameBoardsUseTheGameViewGap() {
         let boards = CastleLayout.gameBoards(in: CGSize(width: 600, height: 250), castle: .castle(.rose))

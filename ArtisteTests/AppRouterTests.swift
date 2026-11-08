@@ -38,4 +38,23 @@ import Testing
         router.backToLevelSelect()
         #expect(router.path == [])
     }
+
+    /// A double tap on a level tile must not push two screens.
+    @Test func openingTwiceKeepsOneRoute() {
+        router.openLevel(2, castleModeOn: true)
+        router.openLevel(3, castleModeOn: true)
+        #expect(router.path == [.castlePicker(index: 2)])
+    }
+
+    @Test func pickingIsIgnoredWithoutAPicker() {
+        router.path = [.level(index: 2)]
+        router.pickCastle(.ice)
+        #expect(router.path == [.level(index: 2)])
+    }
+
+    @Test func nextIsIgnoredWithoutACastleLevel() {
+        router.path = [.castlePicker(index: 2)]
+        router.nextAfterCastleLevel()
+        #expect(router.path == [.castlePicker(index: 2)])
+    }
 }

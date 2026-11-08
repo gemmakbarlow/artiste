@@ -6,13 +6,16 @@ struct TrayView: View {
     let metrics: Theme.Metrics
     let style: BoardStyle
 
+    /// Above and below the tokens; the tray is a token tall plus twice this.
+    nonisolated static let verticalPadding: CGFloat = 6
+
     var body: some View {
         HStack(spacing: metrics.spacing * 2) {
             group(vm.trayActions.filter(\.isMove))
             group(vm.trayActions.filter { !$0.isMove })
         }
         .padding(.horizontal, 16)
-        .padding(.vertical, 6)
+        .padding(.vertical, Self.verticalPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(RoundedRectangle(cornerRadius: 16).fill(Theme.trayCream))
         .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(Theme.orange, lineWidth: 4))

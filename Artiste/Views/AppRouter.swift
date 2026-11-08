@@ -19,7 +19,9 @@ enum Route: Hashable {
     }
 
     /// Tapping a level tile: the castle picker in Castle Mode, otherwise the normal game.
+    /// Only from level select, so a double tap can't push two screens.
     func openLevel(_ index: Int, castleModeOn: Bool) {
+        guard path.isEmpty else { return }
         path.append(castleModeOn ? .castlePicker(index: index) : .level(index: index))
     }
 

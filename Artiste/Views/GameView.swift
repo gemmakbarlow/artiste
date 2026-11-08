@@ -40,8 +40,13 @@ struct GameView: View {
     }
 
     private var headerButtonSize: CGFloat {
-        max(44, metrics.button * 0.8)
+        GameScreenLayout.headerButtonSize(metrics)
     }
+
+    #if DEBUG
+    /// What debug builds measure, to check the layout against `CastleLayout.boardArea`.
+    @State private var measured = MeasuredLayout()
+    #endif
 
     var body: some View {
         ZStack {
@@ -97,23 +102,30 @@ struct GameView: View {
                         controls(vm)
                     } else {
                         // Landscape iPhone is short: put the controls beside the grids so the grids stay big.
-                        HStack(alignment: .bottom, spacing: 16) {
+                        HStack(alignment: .bottom, spacing: GameScreenLayout.controlsSpacing) {
                             controls(vm)
                             boards(vm)
                                 // Castles keep their own margin below; classic grids sit a little above the tray.
                                 .padding(.bottom, vm.castle == nil ? metrics.spacing : 0)
                                 // Keeps roofs and flags out from under the Sound button in the corner.
-                                .padding(.trailing, overlaysHeader ? headerButtonSize + 8 : 0)
+                                .padding(.trailing, overlaysHeader ? headerButtonSize + GameScreenLayout.cornerClearance : 0)
                         }
                     }
                     TrayView(vm: vm, metrics: metrics, style: style)
                 }
             }
-            .padding(.horizontal, 16)
-            // Castle Mode on iPhone tightens this gap for taller castles (spec §7, step 2).
-            .padding(.bottom, overlaysHeader ? metrics.spacing : metrics.spacing * 2)
+            .padding(.horizontal, GameScreenLayout.sidePadding)
+            .padding(.bottom, GameScreenLayout.trayGap(metrics, overlaysHeader: overlaysHeader))
             SlotRowView(vm: vm, metrics: metrics, style: style)
         }
+        #if DEBUG
+        .onGeometryChange(for: ScreenGeometry.self) { proxy in
+            ScreenGeometry(size: proxy.size, insets: proxy.safeAreaInsets)
+        } action: { screen in
+            measured.screen = screen
+            checkBoardArea()
+        }
+        #endif
         .overlay(alignment: .top) {
             if overlaysHeader {
                 HStack {
@@ -128,9 +140,24 @@ struct GameView: View {
     }
 
     /// The Play/Reset tab, sitting on the top-left edge of the tray.
+    /// Beside castles on iPhone it has a fixed column, so `CastleLayout.boardArea` knows the boards' width.
+    @ViewBuilder
     private func controls(_ vm: GameViewModel) -> some View {
-        ControlButtonsView(vm: vm, metrics: metrics)
-            .padding(.leading, 20)
+        let tabs = ControlButtonsView(vm: vm, metrics: metrics)
+            .padding(.leading, GameScreenLayout.controlsLeading)
+        if vm.castle != nil && !isPad {
+            tabs
+                .fixedSize()
+                #if DEBUG
+                .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width in
+                    measured.tabsWidth = width
+                    checkBoardArea()
+                }
+                #endif
+                .frame(width: GameScreenLayout.controlsColumnWidth(metrics), alignment: .leading)
+        } else {
+            tabs
+        }
     }
 
     private func header(_ vm: GameViewModel) -> some View {
@@ -176,7 +203,7 @@ struct GameView: View {
 
     private func grids(_ vm: GameViewModel) -> some View {
         GeometryReader { proxy in
-            let gap = max(24, proxy.size.width * 0.06)
+            let gap = GameScreenLayout.boardGap(width: proxy.size.width)
             let side = max(0, min(proxy.size.height, (proxy.size.width - gap) / 2))
             HStack(spacing: gap) {
                 BoardView(grid: vm.level.target)
@@ -214,7 +241,32 @@ struct GameView: View {
             .padding(.bottom, boards.margin)
             .frame(width: proxy.size.width, height: proxy.size.height, alignment: .bottom)
         }
+        #if DEBUG
+        .onGeometryChange(for: CGSize.self) { $0.size } action: { area in
+            measured.boardArea = area
+            checkBoardArea()
+        }
+        #endif
     }
+
+    #if DEBUG
+    /// Debug builds stop here if the castle board area or the Play/Reset column ever drifts from
+    /// `CastleLayout.boardArea`, the function the 20 pt and 26 pt square-size tests rely on.
+    private func checkBoardArea() {
+        guard castleKind != nil, let screen = measured.screen, let area = measured.boardArea else { return }
+        let expected = CastleLayout.boardArea(
+            screen: CGSize(width: screen.size.width + screen.insets.leading + screen.insets.trailing,
+                           height: screen.size.height + screen.insets.top + screen.insets.bottom),
+            insets: screen.insets, metrics: metrics, isPad: isPad, overlaysHeader: overlaysHeader,
+            controlsWidth: GameScreenLayout.controlsColumnWidth(metrics))
+        assert(abs(area.width - expected.width) <= 1 && abs(area.height - expected.height) <= 1,
+               "Castle board area \(area) differs from CastleLayout.boardArea \(expected)")
+        if let tabs = measured.tabsWidth {
+            assert(tabs <= GameScreenLayout.controlsColumnWidth(metrics) + 0.5,
+                   "Play/Reset tabs (\(tabs) pt) are wider than their column")
+        }
+    }
+    #endif
 
     /// The princess reveal over the canvas castle, on a full-screen dim that also blocks every other tap.
     /// The reveal dims its own frame, so the screen dim leaves a hole there and the whole screen dims evenly.
@@ -233,6 +285,20 @@ struct GameView: View {
         }
     }
 }
+
+#if DEBUG
+/// The game screen's size inside the safe area, and the insets around it.
+private struct ScreenGeometry: Equatable {
+    let size: CGSize
+    let insets: EdgeInsets
+}
+
+private struct MeasuredLayout {
+    var screen: ScreenGeometry?
+    var boardArea: CGSize?
+    var tabsWidth: CGFloat?
+}
+#endif
 
 /// Where the canvas castle is, so the princess reveal can be laid over it above everything else.
 private struct CanvasBoundsKey: PreferenceKey {

@@ -7,6 +7,11 @@ struct SlotRowView: View {
     let metrics: Theme.Metrics
     let style: BoardStyle
 
+    /// Above and below the row; the panel is the Back button's height plus twice this.
+    nonisolated static let verticalPadding: CGFloat = 8
+    /// The Back button is a little bigger than a token, so it sets the row's height.
+    nonisolated static let backButtonScale: CGFloat = 1.15
+
     var body: some View {
         HStack(spacing: metrics.spacing) {
             HStack(spacing: metrics.spacing) {
@@ -28,11 +33,11 @@ struct SlotRowView: View {
             }
             // Keeps 12 slots and the Back button on one line in a 667 pt-wide landscape iPhone (SE).
             Spacer(minLength: metrics.spacing)
-            BackButtonView(vm: vm, size: metrics.token * 1.15)
+            BackButtonView(vm: vm, size: metrics.token * Self.backButtonScale)
         }
         .animation(.spring(duration: 0.3), value: vm.slots)
         .padding(.horizontal, 16)
-        .padding(.vertical, 8)
+        .padding(.vertical, Self.verticalPadding)
         .frame(maxWidth: .infinity)
         .background(Theme.slotPanel.ignoresSafeArea(edges: [.horizontal, .bottom]))
     }
