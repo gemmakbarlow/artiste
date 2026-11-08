@@ -51,6 +51,16 @@
 			<key>UTTypeIdentifier</key>
 			<string>com.gemmakbarlow.artiste.action-token</string>
 		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Artiste placed action</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.gemmakbarlow.artiste.placed-token</string>
+		</dict>
 	</array>
 </dict>
 </plist>

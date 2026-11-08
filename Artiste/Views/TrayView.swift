@@ -22,10 +22,15 @@ struct TrayView: View {
     private func group(_ actions: [Action]) -> some View {
         HStack(spacing: metrics.spacing) {
             ForEach(actions, id: \.self) { action in
-                ActionTokenView(action: action, size: metrics.token)
-                    .draggable(DragToken(action: action, sourceSlot: nil)) {
-                        ActionTokenView(action: action, size: metrics.token)
-                    }
+                // Running locks editing, so the tray can't be dragged from then.
+                if vm.canEdit {
+                    ActionTokenView(action: action, size: metrics.token)
+                        .draggable(DragToken(action: action, sourceSlot: nil)) {
+                            ActionTokenView(action: action, size: metrics.token)
+                        }
+                } else {
+                    ActionTokenView(action: action, size: metrics.token)
+                }
             }
         }
     }

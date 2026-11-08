@@ -7,7 +7,21 @@ struct DragToken: Codable, Hashable, Sendable, Transferable {
     let sourceSlot: Int?
 
     static var transferRepresentation: some TransferRepresentation {
+        CodableRepresentation(contentType: .artistePlacedToken)
+            .exportingCondition { $0.sourceSlot != nil }
         CodableRepresentation(contentType: .artisteActionToken)
+    }
+}
+
+/// A drag that started on a slot. The trash accepts only these, so it doesn't light up for tray drags.
+struct PlacedToken: Codable, Hashable, Sendable, Transferable {
+    let action: Action
+    let sourceSlot: Int
+
+    var dragToken: DragToken { DragToken(action: action, sourceSlot: sourceSlot) }
+
+    static var transferRepresentation: some TransferRepresentation {
+        CodableRepresentation(contentType: .artistePlacedToken)
     }
 }
 

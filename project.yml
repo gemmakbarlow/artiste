@@ -30,6 +30,9 @@ targets:
           - UTTypeIdentifier: com.gemmakbarlow.artiste.action-token
             UTTypeDescription: Artiste action
             UTTypeConformsTo: [public.data]
+          - UTTypeIdentifier: com.gemmakbarlow.artiste.placed-token
+            UTTypeDescription: Artiste placed action
+            UTTypeConformsTo: [public.data]
   ArtisteTests:
     type: bundle.unit-test
     platform: iOS

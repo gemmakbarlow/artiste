@@ -54,7 +54,7 @@ private struct SlotView: View {
                 DropRouter.handle(token, onSlot: index, vm: vm)
                 return true
             } isTargeted: { targeted in
-                isTargeted = targeted
+                isTargeted = targeted && vm.canEdit
             }
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("Slot \(index + 1), \(action.map { ActionTokenView.label($0).lowercased() } ?? "empty")")

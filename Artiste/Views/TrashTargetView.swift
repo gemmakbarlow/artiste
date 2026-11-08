@@ -30,14 +30,15 @@ struct TrashTargetView: View {
                 }
             }
             .contentShape(Circle())
-            .dropDestination(for: DragToken.self) { tokens, _ in
-                guard let token = tokens.first, token.sourceSlot != nil, vm.canEdit else { return false }
-                DropRouter.handleTrash(token, vm: vm)
+            // Only slot drags carry `PlacedToken`, so a tray drag never lights the trash up.
+            .dropDestination(for: PlacedToken.self) { tokens, _ in
+                guard let token = tokens.first, vm.canEdit else { return false }
+                DropRouter.handleTrash(token.dragToken, vm: vm)
                 gulps += 1
                 return true
             } isTargeted: { targeted in
-                isTargeted = targeted
-                if targeted { gulps += 1 }
+                isTargeted = targeted && vm.canEdit
+                if isTargeted { gulps += 1 }
             }
             .accessibilityLabel("Trash")
     }

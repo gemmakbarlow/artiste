@@ -87,4 +87,18 @@ import Testing
         let decoded = try JSONDecoder().decode(DragToken.self, from: JSONEncoder().encode(token))
         #expect(decoded == token)
     }
+
+    @Test func slotDragsAlsoTravelAsPlacedTokens() async throws {
+        let token = DragToken(action: .move(.up), sourceSlot: 2)
+        let data = try await token.exported(as: .artistePlacedToken)
+        let placed = try JSONDecoder().decode(PlacedToken.self, from: data)
+        #expect(placed.dragToken == token)
+    }
+
+    @Test func trayTokensCannotDecodeAsPlacedTokens() throws {
+        let data = try JSONEncoder().encode(DragToken(action: .move(.up), sourceSlot: nil))
+        #expect(throws: DecodingError.self) {
+            try JSONDecoder().decode(PlacedToken.self, from: data)
+        }
+    }
 }
