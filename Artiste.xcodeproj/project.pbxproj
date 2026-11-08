@@ -10,7 +10,9 @@
 		207E1F5C44B13C4A46694A92 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E3F60EA7F80F62A70AFCD9E /* Theme.swift */; };
 		2965F2A920F247504893AF05 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EC1E6AE56E2139F110DB375 /* AppEnvironment.swift */; };
 		2CCB9004B4EA051866F6FC89 /* InterpreterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328D3A70EDB24785FA037E55 /* InterpreterTests.swift */; };
+		388799AB3B8659DCA0F77F54 /* BoardShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09D4BB877804C05E2B965329 /* BoardShape.swift */; };
 		39AECEC26882E240270DDD92 /* ProgressStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39ED531C944B32D6AC432E45 /* ProgressStoreTests.swift */; };
+		3DE7293F507D5CE86E8DCA18 /* BoardShapeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD4B8C2141ADDE569CCDBC4 /* BoardShapeTests.swift */; };
 		3DFA8357C000C013A1A9DAAB /* ZigZagBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = A84C11BCBFC4E4546F2177F3 /* ZigZagBackground.swift */; };
 		44A299314ED18CDE4DEE2638 /* ActionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8347A2DCD812444A3C5554 /* ActionTests.swift */; };
 		472FA463C68A514DC1384DFF /* GridTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ADE8F1A8466F87E78CC3D8D /* GridTests.swift */; };
@@ -54,6 +56,7 @@
 
 /* Begin PBXFileReference section */
 		0931528317A716CA3E7DC6D2 /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
+		09D4BB877804C05E2B965329 /* BoardShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardShape.swift; sourceTree = "<group>"; };
 		12E67F077EDA7D9B5C525AA3 /* SoundPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundPlayer.swift; sourceTree = "<group>"; };
 		17A0B1434B5B9617C1A21295 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
 		19BAF40E507890CAEF1559AC /* SlotRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlotRowView.swift; sourceTree = "<group>"; };
@@ -65,6 +68,7 @@
 		3B4032FAD506EA8DEEBA3D01 /* Interpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interpreter.swift; sourceTree = "<group>"; };
 		3D8347A2DCD812444A3C5554 /* ActionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionTests.swift; sourceTree = "<group>"; };
 		474ADC1C3C9BCCDBF9ECCC46 /* Level.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Level.swift; sourceTree = "<group>"; };
+		6BD4B8C2141ADDE569CCDBC4 /* BoardShapeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardShapeTests.swift; sourceTree = "<group>"; };
 		6CBC49C7BBB1DEE96AB61AF9 /* SmokeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmokeTests.swift; sourceTree = "<group>"; };
 		6D684CFDFE9FC014287BCDFF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6F7AF3A7EB71ADD80DE924B9 /* Artiste.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Artiste.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -157,6 +161,7 @@
 			isa = PBXGroup;
 			children = (
 				3D8347A2DCD812444A3C5554 /* ActionTests.swift */,
+				6BD4B8C2141ADDE569CCDBC4 /* BoardShapeTests.swift */,
 				CBE01E6F9AC41AC58CAA5090 /* GameViewModelTests.swift */,
 				2ADE8F1A8466F87E78CC3D8D /* GridTests.swift */,
 				328D3A70EDB24785FA037E55 /* InterpreterTests.swift */,
@@ -171,6 +176,7 @@
 			isa = PBXGroup;
 			children = (
 				71DBE0A59C45A4110E77FF03 /* Action.swift */,
+				09D4BB877804C05E2B965329 /* BoardShape.swift */,
 				0931528317A716CA3E7DC6D2 /* Grid.swift */,
 				3B4032FAD506EA8DEEBA3D01 /* Interpreter.swift */,
 				474ADC1C3C9BCCDBF9ECCC46 /* Level.swift */,
@@ -278,6 +284,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				44A299314ED18CDE4DEE2638 /* ActionTests.swift in Sources */,
+				3DE7293F507D5CE86E8DCA18 /* BoardShapeTests.swift in Sources */,
 				F683270B4AA4718179EA5E0E /* GameViewModelTests.swift in Sources */,
 				472FA463C68A514DC1384DFF /* GridTests.swift in Sources */,
 				2CCB9004B4EA051866F6FC89 /* InterpreterTests.swift in Sources */,
@@ -296,6 +303,7 @@
 				2965F2A920F247504893AF05 /* AppEnvironment.swift in Sources */,
 				C1970B4BCD2CAE067BD6CD45 /* ArtisteApp.swift in Sources */,
 				F0C638EBFDCB43E328DD86F7 /* BackButtonView.swift in Sources */,
+				388799AB3B8659DCA0F77F54 /* BoardShape.swift in Sources */,
 				FB66C0469011AC0B1E0D16D2 /* ControlButtonsView.swift in Sources */,
 				F6E8CF90235E1C3DD4B3D98F /* FireworksView.swift in Sources */,
 				9F3B26149820845BF914D6B5 /* GameView.swift in Sources */,

@@ -21,48 +21,66 @@ enum GridError: Error, Equatable {
 struct Grid: Equatable, Sendable {
     static let size = 5
 
+    let shape: BoardShape
     private var cells: [PaintColor?]
 
+    var width: Int { shape.width }
+    var height: Int { shape.height }
+
+    /// A classic empty 5 x 5 grid.
     init() {
-        cells = Array(repeating: nil, count: Self.size * Self.size)
+        self.init(shape: .full(width: Self.size, height: Self.size))
     }
 
+    /// An empty grid with paint allowed only on the shape's squares.
+    init(shape: BoardShape) {
+        self.shape = shape
+        cells = Array(repeating: nil, count: shape.width * shape.height)
+    }
+
+    /// A classic 5 x 5 grid from letter rows.
     init(rows: [String]) throws(GridError) {
         guard rows.count == Self.size else { throw .wrongRowCount(rows.count) }
+        try self.init(shape: .full(width: Self.size, height: Self.size), rows: rows)
+    }
+
+    /// Letters only on board squares; `.` elsewhere. A letter off the board is `.badCharacter`.
+    init(shape: BoardShape, rows: [String]) throws(GridError) {
+        guard rows.count == shape.height else { throw .wrongRowCount(rows.count) }
         var parsed: [PaintColor?] = []
         for (r, line) in rows.enumerated() {
-            guard line.count == Self.size else { throw .wrongRowLength(row: r, length: line.count) }
-            for ch in line {
+            guard line.count == shape.width else { throw .wrongRowLength(row: r, length: line.count) }
+            for (c, ch) in line.enumerated() {
                 if ch == "." {
                     parsed.append(nil)
-                } else if let color = PaintColor(letter: ch) {
+                } else if let color = PaintColor(letter: ch), shape.contains(Position(row: r, col: c)) {
                     parsed.append(color)
                 } else {
                     throw .badCharacter(ch)
                 }
             }
         }
+        self.shape = shape
         cells = parsed
     }
 
     var rows: [String] {
-        (0..<Self.size).map { r in
-            String((0..<Self.size).map { c in cells[r * Self.size + c]?.letter ?? "." })
+        (0..<height).map { r in
+            String((0..<width).map { c in cells[r * width + c]?.letter ?? "." })
         }
     }
 
-    /// Reading outside the grid returns nil; writing outside is a programmer error.
+    /// Reading outside the board returns nil; writing outside is a programmer error.
     subscript(_ p: Position) -> PaintColor? {
-        get { contains(p) ? cells[p.row * Self.size + p.col] : nil }
+        get { contains(p) ? cells[p.row * width + p.col] : nil }
         set {
             precondition(contains(p), "Position out of bounds")
-            cells[p.row * Self.size + p.col] = newValue
+            cells[p.row * width + p.col] = newValue
         }
     }
 
-    func contains(_ p: Position) -> Bool {
-        (0..<Self.size).contains(p.row) && (0..<Self.size).contains(p.col)
-    }
+    func contains(_ p: Position) -> Bool { shape.contains(p) }
 
-    var emptyCount: Int { cells.filter { $0 == nil }.count }
+    /// Board squares that are not painted yet.
+    var emptyCount: Int { shape.positions.filter { self[$0] == nil }.count }
 }
