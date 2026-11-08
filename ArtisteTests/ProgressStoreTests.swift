@@ -19,4 +19,20 @@ import Testing
         let reloaded = ProgressStore(defaults: defaults)
         #expect(reloaded.isMuted == true)
     }
+
+    @Test func persistsCastleMode() {
+        let store = ProgressStore(defaults: defaults)
+        #expect(store.isCastleModeOn == false)
+        store.isCastleModeOn = true
+        let reloaded = ProgressStore(defaults: defaults)
+        #expect(reloaded.isCastleModeOn == true)
+    }
+
+    @Test func persistsCrowns() {
+        let store = ProgressStore(defaults: defaults)
+        #expect(store.crownedLevelIDs.isEmpty)
+        store.markCrowned(4)
+        let reloaded = ProgressStore(defaults: defaults)
+        #expect(reloaded.crownedLevelIDs == [4])
+    }
 }

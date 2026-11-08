@@ -8,8 +8,8 @@ import Testing
     let sound = SilentSoundPlayer()
     let progress = ProgressStore(defaults: UserDefaults(suiteName: "test-\(UUID())")!)
 
-    func makeVM(levelIndex: Int = 0, stepDelay: Duration = .zero) -> GameViewModel {
-        GameViewModel(levels: Self.levels, levelIndex: levelIndex, progress: progress, sound: sound, stepDelay: stepDelay)
+    func makeVM(levelIndex: Int = 0, stepDelay: Duration = .zero, castle: Castle? = nil) -> GameViewModel {
+        GameViewModel(levels: Self.levels, levelIndex: levelIndex, progress: progress, sound: sound, stepDelay: stepDelay, castle: castle)
     }
 
     /// Taps each of `actions` in the tray, filling slots from the left.
@@ -34,6 +34,31 @@ import Testing
         let task = Task { await vm.play() }
         await waitUntilRunning(vm)
         return (vm, task)
+    }
+
+    @Test func castleLevelUsesCastleBoard() {
+        let castle = Castle.castle(.rose)
+        let vm = makeVM(castle: castle)
+        #expect(vm.canvas.shape == castle.shape)
+        #expect(vm.marker == castle.start)
+        #expect(vm.slots.count == vm.level.solution.count + 2)
+    }
+
+    @Test func solvingCastleLevelCrowns() async {
+        let vm = makeVM(castle: .castle(.rose))
+        fill(vm, vm.level.solution)
+        await vm.play()
+        #expect(vm.state == .succeeded)
+        #expect(progress.completedLevelIDs.contains(1))
+        #expect(progress.crownedLevelIDs.contains(1))
+    }
+
+    @Test func normalLevelDoesNotCrown() async {
+        let vm = makeVM()
+        fill(vm, vm.level.solution)
+        await vm.play()
+        #expect(vm.state == .succeeded)
+        #expect(progress.crownedLevelIDs.isEmpty)
     }
 
     @Test func startsReady() {

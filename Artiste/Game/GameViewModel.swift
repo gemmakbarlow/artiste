@@ -10,6 +10,11 @@ enum BoardState: Sendable {
     @ObservationIgnored private let progress: ProgressStore
     @ObservationIgnored private let sound: SoundPlaying
     @ObservationIgnored private let stepDelay: Duration
+    /// The level for the current index, built once per index (castle levels are generated).
+    @ObservationIgnored private var currentLevel: Level
+
+    /// Set in Castle Mode: levels are built on this castle's board instead of the bundled one.
+    let castle: Castle?
 
     /// The in-flight playback, so `cancelRun` can stop it mid-sleep.
     @ObservationIgnored private var runTask: Task<Void, Never>?
@@ -27,20 +32,26 @@ enum BoardState: Sendable {
     /// Increases each time an action is tapped while the row is full; drives the row's shake.
     private(set) var rejectedAddCount = 0
 
-    init(levels: [Level], levelIndex: Int, progress: ProgressStore, sound: SoundPlaying, stepDelay: Duration = .milliseconds(600)) {
+    init(levels: [Level], levelIndex: Int, progress: ProgressStore, sound: SoundPlaying, stepDelay: Duration = .milliseconds(600), castle: Castle? = nil) {
         precondition(levels.indices.contains(levelIndex), "Level index out of range")
         self.levels = levels
         self.levelIndex = levelIndex
         self.progress = progress
         self.sound = sound
         self.stepDelay = stepDelay
-        let level = levels[levelIndex]
+        self.castle = castle
+        let level = Self.makeLevel(levels[levelIndex], castle: castle)
+        currentLevel = level
         slots = Array(repeating: nil, count: level.slotCount)
         canvas = level.initial
         marker = level.start
     }
 
-    var level: Level { levels[levelIndex] }
+    var level: Level { currentLevel }
+
+    private static func makeLevel(_ base: Level, castle: Castle?) -> Level {
+        castle.map { CastlePuzzles.level(base.id, in: $0) } ?? base
+    }
     var canEdit: Bool { state == .ready || state == .failed }
     var canPlay: Bool { state == .ready && slots.contains { $0 != nil } }
     var canReset: Bool { state == .failed }
@@ -130,6 +141,7 @@ enum BoardState: Sendable {
         if !bumped && canvas == level.target {
             state = .succeeded
             progress.markCompleted(level.id)
+            if castle != nil { progress.markCrowned(level.id) }
             sound.play(.success)
         } else {
             state = .failed
@@ -150,6 +162,7 @@ enum BoardState: Sendable {
     func next() {
         guard state == .succeeded, !isLastLevel else { return }
         levelIndex += 1
+        currentLevel = Self.makeLevel(levels[levelIndex], castle: castle)
         slots = Array(repeating: nil, count: level.slotCount)
         restoreBoard()
     }
